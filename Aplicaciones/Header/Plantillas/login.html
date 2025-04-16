@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+        <!-- Imagen más grande -->
+        <img src="{% static 'img/logo.png' %}" alt="Login" class="logo-img" />
+
+        <!-- Formulario de login -->
+        <form method="POST" action="{% url 'login' %}" class="space-y-4">
+            {% csrf_token %}
+            
+            <input type="email" name="correo_claro" placeholder="Correo electrónico" required
+                   class="login-input" />
+
+            <input type="password" name="password" placeholder="Contraseña" required
+                   class="login-input" />
+
+            <button type="submit" class="login-button">
+                Iniciar sesión
+            </button>
+        </form>
+
+        <!-- Olvidaste tu contraseña   -->
+        <div class="mt-4">
+            <p class="text-sm text-gray-500">¿Olvidaste tu contraseña?</p>
+            <a  href="{% url 'recuperar_contrasena' %}"
+               class="text-blue-600 text-sm font-semibold hover:underline mt-1 inline-block">
+                Recuperar contraseña
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

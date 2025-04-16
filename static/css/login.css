@@ -1,0 +1,106 @@
+:root {
+    --color-primario: #970007;
+    --color-secundario: #47586E;
+    --color-terciario: #FFFFFF;
+    --color-fondo: #E4E9F7;
+    --color-letra-fondo: #000000;
+    --color-borde-input: #d1d5db;
+    --color-focus-ring: #97000766;
+
+    /* ====== Transition ====== */
+    --tran-03: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.3s ease;
+    --tran-05: all 0.3s ease;
+
+
+    /* ====== Close ====== */
+    --left: 250px; /* 78px*/
+    --top: 78px;
+    /* ====== Close Cursos====== */
+    --leftCurso: 300px; /* 78px*/
+    --topCurso: 78px;
+}
+
+.login-body {
+    background-color: var(--color-fondo);
+    color: var(--color-letra-fondo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem; /* Añade padding para evitar que toque los bordes en móvil */
+    box-sizing: border-box;
+}
+
+.login-container {
+    background-color: var(--color-terciario);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.logo-img {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1.5rem auto;
+    object-fit: contain;
+}
+
+.login-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-borde-input);
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+.login-input:focus {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.login-button {
+    width: 100%;
+    background-color: var(--color-primario);
+    color: var(--color-terciario);
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background-color: var(--color-secundario);
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .logo-img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1rem;
+    }
+
+    .login-button {
+        padding: 0.65rem;
+        font-size: 0.95rem;
+    }
+
+    .login-input {
+        padding: 0.65rem 0.9rem;
+    }
+}
