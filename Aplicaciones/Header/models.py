@@ -3,10 +3,13 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from cryptography.fernet import Fernet
 import base64
 import os
+from django.contrib import admin
 
 # Generar y guardar esta clave de forma segura en producción
 KEY = base64.urlsafe_b64encode(os.urandom(32))
 fernet = Fernet(KEY)
+
+
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, correo_claro, password=None, **extra_fields):
@@ -93,7 +96,7 @@ class Producto(models.Model):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     correo_encriptado = models.BinaryField()
     correo_claro = models.EmailField(unique=True)  # Este es el indexado para login
-    cedula_encriptada = models.BinaryField()
+    cedula_encriptada = models.BinaryField(unique=True, null=False, editable= True)
     nombre = models.CharField(max_length=150)
     telefono = models.CharField(max_length=20, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
@@ -118,5 +121,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         self.correo_encriptado = fernet.encrypt(value.encode())
         self.correo_claro = value  # también actualizamos el visible
 
+    @property
+    def cedula(self):
+        return fernet.decrypt(self.cedula_encriptada).decode()
+
+    @cedula.setter
+    def cedula(self, value):
+        self.cedula_encriptada = fernet.encrypt(value.encode())
+
+
     def __str__(self):
         return self.correo_claro
+
+

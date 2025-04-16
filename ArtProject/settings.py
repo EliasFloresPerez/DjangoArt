@@ -102,7 +102,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-AUTH_USER_MODEL = 'Header.Usuario'  # Cambiamos el modelo de usuario por el nuestro
+AUTH_USER_MODEL = 'Header.Usuario'
+
 
 ##---
 

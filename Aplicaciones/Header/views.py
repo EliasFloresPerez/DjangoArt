@@ -39,12 +39,20 @@ def logout_view(request):
 
 
 #Vista del Home
-
 def home_view(request):
     if request.user.is_authenticated:
-        return render(request, 'home.html')
+       
+
+
+        if request.user.rol.nombre == "Admin":
+            base_template = 'sidebaradmin.html'
+        else:
+            base_template = 'sidebaruser.html'
+
+        return render(request, 'home.html', {'base_template': base_template})
     else:
-        return redirect('login')  # Redirige al login si no está autenticado
+        return redirect('login')
+
     
 
 
