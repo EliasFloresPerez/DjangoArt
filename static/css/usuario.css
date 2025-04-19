@@ -1,0 +1,294 @@
+/* ========== Contenedor ========== */
+#usuarios-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-fondo);
+}
+
+/* ========== Título y Encabezado ========== */
+#usuarios-container h2 {
+    font-size: 2rem;
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+}
+
+.header-usuarios {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.header-usuarios .buscar-usuario {
+    flex-grow: 1;
+}
+
+.buscar-usuario input {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-borde-input);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 250px;
+    font-size: 0.9rem;
+}
+
+/* ========== Botón Agregar ========== */
+#btn-agregar-usuario {
+    padding: 0.6rem 1.2rem;
+    background-color: var(--color-primario);
+    color: var(--color-terciario);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: var(--tran-03);
+    margin: 1rem 0rem 1.5rem 0rem;
+}
+
+#btn-agregar-usuario:hover {
+    background-color: #750005;
+}
+
+/* ========== Tabla de Usuarios ========== */
+#tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: var(--color-terciario);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#tabla-usuarios th,
+#tabla-usuarios td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+#tabla-usuarios th {
+    background-color: var(--color-primario);
+    font-weight: 600;
+    color: var(--color-terciario);
+}
+
+/* ========== Truncar texto largo con puntos suspensivos ========== */
+#tabla-usuarios td {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========== Botones Acciones ========== */
+.btn-editar,
+.btn-eliminar {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-editar:hover {
+    opacity: 0.9;
+}
+
+.btn-eliminar {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    opacity: 0.9;
+}
+
+/* ========== Modales ========== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+.modal-contenido {
+    background-color: var(--color-terciario);
+    margin: 5% auto;
+    padding: 2rem;
+    max-width: 40%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-contenido h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--color-primario);
+}
+
+.modal-contenido label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 500;
+    color: var(--color-secundario);
+}
+
+.modal-contenido input,
+.modal-contenido select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.4rem;
+    border: 1px solid var(--color-borde-input);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+}
+
+.modal-contenido button {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-contenido button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.modal-contenido button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.btn-cerrar-modal {
+    background-color: #6c757d;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.btn-cerrar-modal:hover {
+    background-color: #5a6268;
+}
+
+/* ========== Estilo específico para el modal de eliminación ========== */
+.modalEliminar .modal-contenido {
+    max-width: 15% !important; /* Tamaño más pequeño */
+    padding: 1.5rem !important; /* Menos espacio interior */
+}
+
+/* Hacer el texto del modal más pequeño */
+.modalEliminar h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Asegúrate de que el botón también tenga un tamaño adecuado */
+.modalEliminar .modal-contenido button {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+}
+
+.modal-contenido .botones-modal {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* Espacio entre botones */
+    margin-top: 1.5rem;
+}
+
+/* ========== Media Queries para Responsividad ========== */
+
+@media screen and (max-width: 768px) {
+    /* Ajustes para pantallas pequeñas (tablets y móviles) */
+    .header-usuarios {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #tabla-usuarios th,
+    #tabla-usuarios td {
+        font-size: 0.85rem;
+    }
+
+    #tabla-usuarios td {
+        max-width: 150px;
+    }
+
+    .modal-contenido {
+        max-width: 90%; /* Para que el modal ocupe más espacio en pantallas pequeñas */
+        padding: 1.5rem;
+    }
+
+    .modal-contenido h3 {
+        font-size: 1.1rem;
+    }
+
+    /* Ajuste de botones */
+    .modal-contenido button {
+        font-size: 0.85rem;
+    }
+
+    .modalEliminar .modal-contenido {
+        max-width: 90% !important; /* Tamaño más pequeño */
+        
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Ajustes para pantallas extra pequeñas (móviles) */
+    #usuarios-container {
+        padding: 1rem;
+    }
+
+    .header-usuarios .buscar-usuario input {
+        max-width: 100%;
+        font-size: 0.85rem;
+    }
+
+    #btn-agregar-usuario {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+
+    #tabla-usuarios td {
+        max-width: 120px; /* Reduce el tamaño de las celdas */
+    }
+
+    .modal-contenido {
+        padding: 1rem;
+        max-width: 95%;
+    }
+
+    .modal-contenido h3 {
+        font-size: 1rem;
+    }
+    .modalEliminar .modal-contenido {
+        max-width: 90% !important; /* Tamaño más pequeño */
+        
+    }
+}

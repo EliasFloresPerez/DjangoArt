@@ -96,7 +96,7 @@ class Producto(models.Model):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     correo_encriptado = models.BinaryField()
     correo_claro = models.EmailField(unique=True)  # Este es el indexado para login
-    cedula_encriptada = models.BinaryField(unique=True, null=False, editable= True)
+    cedula = models.CharField(max_length=20, blank=True)
     nombre = models.CharField(max_length=150)
     telefono = models.CharField(max_length=20, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
@@ -121,13 +121,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         self.correo_encriptado = fernet.encrypt(value.encode())
         self.correo_claro = value  # también actualizamos el visible
 
-    @property
-    def cedula(self):
-        return fernet.decrypt(self.cedula_encriptada).decode()
 
-    @cedula.setter
-    def cedula(self, value):
-        self.cedula_encriptada = fernet.encrypt(value.encode())
 
 
     def __str__(self):

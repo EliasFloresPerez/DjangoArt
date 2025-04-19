@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
 from Aplicaciones.Header.views import login_view,home_view, RecuperarContrasenaView,logout_view
+from Aplicaciones.Usuarios.views import UsuarioCrudView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +26,12 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),  # URL para cerrar sesión
     path('home/', home_view, name='home'),
     path('recuperar/', RecuperarContrasenaView.as_view(), name='recuperar_contrasena'),
+    path('usuarios/', UsuarioCrudView.as_view(), name='usuarios_crud'),  # URL para CRUD de usuarios
+    
 
+]
+
+# Redirige cualquier URL no definida a la página principal (home)
+urlpatterns += [
+    path('<path:path>/', lambda request, path: redirect('home')),  # Ruta comodín
 ]

@@ -56,7 +56,8 @@ ROOT_URLCONF = 'ArtProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'Aplicaciones/Header/Plantillas')],
+        'DIRS': [os.path.join(BASE_DIR,'Aplicaciones/Header/Plantillas'),
+                 os.path.join(BASE_DIR,'Aplicaciones/Usuarios/Plantillas')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

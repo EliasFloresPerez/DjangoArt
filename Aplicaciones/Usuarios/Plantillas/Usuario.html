@@ -1,0 +1,173 @@
+{% extends base_template %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="{% static 'js/usuario.js' %}"></script>
+
+<div id="usuarios-container">
+    <h2>Gestión de Usuarios</h2>
+    <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Usuario</button>
+
+    <table id="tabla-usuarios" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Nombre</th>
+                <th>Cédula</th>
+                <th>Teléfono</th>
+                <th>Empresa</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>  <!-- ID del usuario -->
+                    <td>{{ usuario.correo_encriptado }}</td>  <!-- Correo encriptado (Mostrado como "Correo") -->
+                    <td>{{ usuario.password }}</td>  <!-- Contraseña -->
+                    <td>{{ usuario.nombre }}</td>  <!-- Nombre -->
+                    <td>{{ usuario.cedula }}</td>  <!-- Cédula -->
+                    <td>{{ usuario.telefono }}</td>  <!-- Teléfono -->
+                    <td>{{ usuario.empresa.nombre }}</td>  <!-- Empresa -->
+                    <td style="display: flex; gap: 0.3rem;">
+                        <button class="btn-editar" data-modal="editarModal{{ usuario.id }}" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="btn-eliminar" 
+                                data-modal="confirmarEliminacionModal" 
+                                data-usuario-id="{{ usuario.id }}" 
+                                data-usuario-nombre="{{ usuario.nombre }}" 
+                                title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+
+  
+
+<!-- Modal editar -->
+<div id="editarModal{{ usuario.id }}" class="modal">
+    <div class="modal-contenido">
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="edit">
+            <input type="hidden" name="id" value="{{ usuario.id }}">
+
+            <h3>Editar Usuario</h3>
+            <label>Correo</label>
+            <input name="correo_claro" value="{{ usuario.correo_claro }}">
+
+            <label>Nombre</label>
+            <input name="nombre" value="{{ usuario.nombre }}">
+
+            <label>Teléfono</label>
+            <input name="telefono" value="{{ usuario.telefono }}">
+
+            <label>Cédula</label>
+            <input name="cedula" value="{{ usuario.cedula }}"> <!-- Cédula deshabilitada -->
+
+            <label>Contraseña (Dejar vacío si no desea cambiar)</label>
+            <input name="password" type="password" placeholder="Nueva Contraseña">
+
+            <label>Empresa</label>
+            <select name="empresa">
+                {% for empresa in form.fields.empresa.queryset %}
+                    <option value="{{ empresa.id }}" {% if empresa == usuario.empresa %}selected{% endif %}>{{ empresa.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Rol</label>
+            <select name="rol">
+                {% for rol in form.fields.rol.queryset %}
+                    <option value="{{ rol.id }}" {% if rol == usuario.rol %}selected{% endif %}>{{ rol.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            
+
+            <div class="botones-modal">
+                <button type="submit">Guardar</button>
+            <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div id="confirmarEliminacionModal" class="modal modalEliminar">
+    <div class="modal-contenido">
+        <h3>¿Estás seguro de que quieres eliminar al usuario <span id="usuario-nombre"></span>?</h3>
+        <form method="post" id="form-eliminar-usuario">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" id="usuario-id">
+            <div class="botones-modal">
+                <button type="submit">Sí, eliminar</button>
+                <button class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>      
+<!-- Modal crear -->
+<div id="crearModal" class="modal">
+    <div class="modal-contenido">
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+
+            <h3>Crear Usuario</h3>
+            <label>Correo</label>
+            <input name="correo_claro" type="email" required>
+
+            <label>Cédula</label>
+            <input name="cedula" type="text" required>
+
+            <label>Nombre</label>
+            <input name="nombre" type="text" required>
+
+            <label>Teléfono</label>
+            <input name="telefono" type="text" required>
+
+            <label>Contraseña</label>
+            <input name="password" type="password" required>
+
+            <label>Empresa</label>
+            <select name="empresa" required>
+                {% for empresa in form.fields.empresa.queryset %}
+                    <option value="{{ empresa.id }}">{{ empresa.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Rol</label>
+            <select name="rol" required>
+                {% for rol in form.fields.rol.queryset %}
+                    <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            
+
+            <div class="botones-modal">
+                <button type="submit">Crear</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- jQuery y DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Tu script con modales y DataTables -->
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}
