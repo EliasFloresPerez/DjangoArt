@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
-<script src="{% static 'js/usuario.js' %}"></script>
+<script src="{% static 'js/Modal.js' %}"></script>
 
 <div id="usuarios-container">
     <h2>Gestión de Usuarios</h2>
@@ -111,7 +111,8 @@
             <input type="hidden" name="id" id="usuario-id">
             <div class="botones-modal">
                 <button type="submit">Sí, eliminar</button>
-                <button class="btn-cerrar-modal">Cancelar</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+
             </div>
         </form>
     </div>

@@ -1,5 +1,6 @@
+
 /* ========== Contenedor ========== */
-#usuarios-container {
+#niveles-container {
     max-width: 100%;
     margin: 0 auto;
     padding: 2rem;
@@ -8,13 +9,14 @@
 }
 
 /* ========== Título y Encabezado ========== */
-#usuarios-container h2 {
+#niveles-container h2 {    
     font-size: 2rem;
     color: var(--color-primario);
     margin-bottom: 1rem;
+
 }
 
-.header-usuarios {
+.header-niveles {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,11 +25,11 @@
     margin-bottom: 1rem;
 }
 
-.header-usuarios .buscar-usuario {
+.header-niveles .buscar-nivel {
     flex-grow: 1;
 }
 
-.buscar-usuario input {
+.buscar-nivel input {
     padding: 0.5rem 1rem;
     border: 1px solid var(--color-borde-input);
     border-radius: 6px;
@@ -37,7 +39,7 @@
 }
 
 /* ========== Botón Agregar ========== */
-#btn-agregar-usuario {
+#btn-agregar-nivel {
     padding: 0.6rem 1.2rem;
     background-color: var(--color-primario);
     color: var(--color-terciario);
@@ -49,12 +51,12 @@
     margin: 1rem 0rem 1.5rem 0rem;
 }
 
-#btn-agregar-usuario:hover {
+#btn-agregar-nivel:hover {
     background-color: #750005;
 }
 
-/* ========== Tabla de Usuarios ========== */
-#tabla-usuarios {
+/* ========== Tabla de Niveles ========== */
+#tabla-niveles {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
@@ -64,41 +66,42 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-#tabla-usuarios th,
-#tabla-usuarios td {
+#tabla-niveles th,
+#tabla-niveles td {
     padding: 1rem;
-    text-align: left;
+    text-align: center; /* ✅ centrado horizontal */
+    vertical-align: middle; /* ✅ centrado vertical */
     border-bottom: 1px solid #eee;
 }
 
-#tabla-usuarios th {
-    background-color: var(--color-primario);
-    font-weight: 600;
-    color: var(--color-terciario);
-}
-
-/* ========== Truncar texto largo con puntos suspensivos ========== */
-#tabla-usuarios td {
+/* ========== Truncar texto largo opcional ========== */
+/*
+#tabla-niveles td {
     max-width: 200px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+*/
+
+#tabla-niveles th {
+    background-color: var(--color-primario);
+    font-weight: 600;
+    color: var(--color-terciario);
+}
+
+
 
 /* ========== Botones Acciones ========== */
-.btn-editar,
-.btn-eliminar {
+.btn-editar {
+    background-color: #ffc107;
+    color: #212529;
     padding: 0.45rem 0.8rem;
     font-size: 0.85rem;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: opacity 0.2s;
-}
-
-.btn-editar {
-    background-color: #ffc107;
-    color: #212529;
 }
 
 .btn-editar:hover {
@@ -108,6 +111,12 @@
 .btn-eliminar {
     background-color: #dc3545;
     color: white;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
 
 .btn-eliminar:hover {
@@ -146,6 +155,7 @@
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.25rem;
+    text-align: center;
     color: var(--color-primario);
 }
 
@@ -196,51 +206,47 @@
     background-color: #5a6268;
 }
 
-/* ========== Estilo específico para el modal de eliminación ========== */
-.modalEliminar .modal-contenido {
-    max-width: 15% !important; /* Tamaño más pequeño */
-    padding: 1.5rem !important; /* Menos espacio interior */
+.modal-contenido .botones-modal {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-/* Hacer el texto del modal más pequeño */
+/* ========== Modal Eliminación Específico ========== */
+.modalEliminar .modal-contenido {
+    max-width: 15% !important;
+    padding: 1.5rem !important;
+}
+
 .modalEliminar h3 {
     font-size: 1rem;
     margin-bottom: 1rem;
 }
 
-/* Asegúrate de que el botón también tenga un tamaño adecuado */
 .modalEliminar .modal-contenido button {
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
 }
 
-.modal-contenido .botones-modal {
-    display: flex;
-    justify-content: center;
-    gap: 1rem; /* Espacio entre botones */
-    margin-top: 1.5rem;
-}
-
-/* ========== Media Queries para Responsividad ========== */
-
+/* ========== Media Queries ========== */
 @media screen and (max-width: 768px) {
-    /* Ajustes para pantallas pequeñas (tablets y móviles) */
-    .header-usuarios {
+    .header-niveles {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    #tabla-usuarios th,
-    #tabla-usuarios td {
+    #tabla-niveles th,
+    #tabla-niveles td {
         font-size: 0.85rem;
     }
 
-    #tabla-usuarios td {
+    #tabla-niveles td {
         max-width: 150px;
     }
 
     .modal-contenido {
-        max-width: 90%; /* Para que el modal ocupe más espacio en pantallas pequeñas */
+        max-width: 90%;
         padding: 1.5rem;
     }
 
@@ -248,35 +254,32 @@
         font-size: 1.1rem;
     }
 
-    /* Ajuste de botones */
     .modal-contenido button {
         font-size: 0.85rem;
     }
 
     .modalEliminar .modal-contenido {
-        max-width: 90% !important; /* Tamaño más pequeño */
-        
+        max-width: 90% !important;
     }
 }
 
 @media screen and (max-width: 480px) {
-    /* Ajustes para pantallas extra pequeñas (móviles) */
-    #usuarios-container {
+    #niveles-container {
         padding: 1rem;
     }
 
-    .header-usuarios .buscar-usuario input {
+    .header-niveles .buscar-nivel input {
         max-width: 100%;
         font-size: 0.85rem;
     }
 
-    #btn-agregar-usuario {
+    #btn-agregar-nivel {
         font-size: 0.85rem;
         padding: 0.5rem 1rem;
     }
 
-    #tabla-usuarios td {
-        max-width: 120px; /* Reduce el tamaño de las celdas */
+    #tabla-niveles td {
+        max-width: 120px;
     }
 
     .modal-contenido {
@@ -287,9 +290,12 @@
     .modal-contenido h3 {
         font-size: 1rem;
     }
+
     .modalEliminar .modal-contenido {
-        max-width: 90% !important; /* Tamaño más pequeño */
-        
+        max-width: 90% !important;
     }
-    
+
+    #niveles-container h2 {    
+        text-align: center;
+    }
 }

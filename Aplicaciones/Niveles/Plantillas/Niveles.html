@@ -1,0 +1,106 @@
+{% extends base_template %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/nivel.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="{% static 'js/Modal.js' %}"></script>
+
+
+<div id="niveles-container">
+    <h2>Gestión de Niveles</h2>
+    <button id="btn-agregar-nivel" data-modal="crearNivelModal">Agregar Nivel</button>
+
+    <table id="tabla-niveles" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Actividad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nivel in niveles %}
+                <tr>
+                    <td>{{ nivel.id }}</td>
+                    <td>{{ nivel.actividad }}</td>
+                    <td>
+
+                        <button class="btn-editar" data-modal="editarNivelModal{{ nivel.id }}" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="btn-eliminar"
+                                data-modal="confirmarEliminacionModal"
+                                data-nivel-id="{{ nivel.id }}"
+                                data-nivel-actividad="{{ nivel.actividad }}"
+                                title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- Modal editar -->
+                <div id="editarNivelModal{{ nivel.id }}" class="modal">
+                    <div class="modal-contenido">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id" value="{{ nivel.id }}">
+
+                            <h3>Editar Nivel</h3>
+                            <label>Actividad</label>
+                            <input name="actividad" value="{{ nivel.actividad }}" required>
+
+                            <div class="botones-modal">
+                                <button type="submit">Guardar</button>
+                                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal eliminar -->
+<div id="confirmarEliminacionModal" class="modal modalEliminar">
+    <div class="modal-contenido">
+        <h3>¿Eliminar el nivel "<span id="nivel-actividad"></span>"?</h3>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" id="nivel-id">
+            <div class="botones-modal">
+                <button type="submit">Sí, eliminar</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal crear -->
+<div id="crearNivelModal" class="modal">
+    <div class="modal-contenido">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+
+            <h3>Crear Nivel</h3>
+            <label>Actividad</label>
+            <input name="actividad" type="text" required>
+
+            <div class="botones-modal">
+                <button type="submit">Crear</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+{% endblock %}

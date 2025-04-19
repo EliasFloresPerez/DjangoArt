@@ -10,6 +10,6 @@ class AdminRequiredMixin(LoginRequiredMixin):
             return self.handle_no_permission()
 
         if not hasattr(request.user, 'rol') or request.user.rol.nombre.lower() != 'admin':
-            return redirect('dashboard')  # Asegúrate que 'dashboard' exista en tus URLs
+            return redirect('home')  # Asegúrate que 'dashboard' exista en tus URLs
 
         return super().dispatch(request, *args, **kwargs)

@@ -19,6 +19,7 @@ from django.urls import path
 from django.shortcuts import redirect
 from Aplicaciones.Header.views import login_view,home_view, RecuperarContrasenaView,logout_view
 from Aplicaciones.Usuarios.views import UsuarioCrudView
+from Aplicaciones.Niveles.views import NivelCrudView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('home/', home_view, name='home'),
     path('recuperar/', RecuperarContrasenaView.as_view(), name='recuperar_contrasena'),
     path('usuarios/', UsuarioCrudView.as_view(), name='usuarios_crud'),  # URL para CRUD de usuarios
+    path('niveles/', NivelCrudView.as_view(), name='niveles_crud'),  # URL para CRUD de niveles
     
 
 ]
