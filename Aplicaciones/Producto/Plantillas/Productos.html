@@ -3,6 +3,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="{% static 'js/Modal.js' %}"></script>
 
@@ -18,9 +19,14 @@
     <h2>Gestión de Productos</h2>
     <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Producto</button>
 
+
+
+
+
     <table id="tabla-usuarios" class="display">
         <thead>
             <tr>
+                <th><input type="checkbox" id="check-todos"></th>
                 <th>ID</th>
                 <th>Código</th>
                 <th>Nombre</th>
@@ -36,90 +42,104 @@
         </thead>
         <tbody>
             {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.id }}</td>
-                    <td>{{ producto.codigo }}</td>
-                    <td>{{ producto.nombre }}</td>
-                    <td>{{ producto.categoria.descripcion }}</td>
-                    <td>{{ producto.peso }}</td>
-                    <td>{{ producto.estado }}</td>
-                    <td>{{ producto.empresa.nombre }}</td>
-                    <td>{{ producto.cantidad }}</td>
-                    <td>{{ producto.origen }}</td>
-                    <td>{{ producto.fecha_ingreso }}</td>
-                    <td style="display: flex; gap: 0.3rem;">
-                        <button class="btn-editar" data-modal="editarModal{{ producto.id }}" title="Editar">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                        <button class="btn-eliminar" 
-                                data-modal="confirmarEliminacionModal" 
-                                data-usuario-id="{{ producto.id }}" 
-                                data-usuario-nombre="{{ producto.nombre }}" 
-                                title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" form="form-imprimir" name="productos_seleccionados" value="{{ producto.id }}">
+                </td>
+                <td>{{ producto.id }}</td>
+                <td>{{ producto.codigo }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria.descripcion }}</td>
+                <td>{{ producto.peso }}</td>
+                <td>{{ producto.estado }}</td>
+                <td>{{ producto.empresa.nombre }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>{{ producto.origen }}</td>
+                <td>{{ producto.fecha_ingreso }}</td>
+                <td style="display: flex; gap: 0.3rem;">
+                    <button class="btn-editar" data-modal="editarModal{{ producto.id }}" title="Editar">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="btn-eliminar" 
+                            data-modal="confirmarEliminacionModal" 
+                            data-usuario-id="{{ producto.id }}" 
+                            data-usuario-nombre="{{ producto.nombre }}" 
+                            title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
 
-                <!-- Modal editar -->
-                <div id="editarModal{{ producto.id }}" class="modal">
-                    <div class="modal-contenido">
-                        <form method="post" action="">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="edit">
-                            <input type="hidden" name="id" value="{{ producto.id }}">
+            <!-- Modal editar -->
+            <div id="editarModal{{ producto.id }}" class="modal">
+                <div class="modal-contenido">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="id" value="{{ producto.id }}">
 
-                            <h3>Editar Producto</h3>
-                            <label>Código</label>
-                            <input name="codigo" value="{{ producto.codigo }}" required>
+                        <h3>Editar Producto</h3>
+                        <label>Código</label>
+                        <input name="codigo" value="{{ producto.codigo }}" required>
 
-                            <label>Nombre</label>
-                            <input name="nombre" value="{{ producto.nombre }}" required>
+                        <label>Nombre</label>
+                        <input name="nombre" value="{{ producto.nombre }}" required>
 
-                            <label>Descripción</label>
-                            <input name="descripcion"  value= "{{ producto.descripcion }}" required>
+                        <label>Descripción</label>
+                        <input name="descripcion" value="{{ producto.descripcion }}" required>
 
-                            <label>Peso</label>
-                            <input name="peso" type="number" step="0.01" value="{{ producto.peso }}" required>
+                        <label>Peso</label>
+                        <input name="peso" type="number" step="0.01" value="{{ producto.peso }}" required>
 
-                            <label>Cantidad</label>
-                            <input name="cantidad" type="number" value="{{ producto.cantidad }}" required>
+                        <label>Cantidad</label>
+                        <input name="cantidad" type="number" value="{{ producto.cantidad }}" required>
 
-                            <label>Origen</label>
-                            <input name="origen" value="{{ producto.origen }}" required>
+                        <label>Origen</label>
+                        <input name="origen" value="{{ producto.origen }}" required>
 
-                            <label>Fecha de Ingreso</label>
-                            <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required>
+                        <label>Fecha de Ingreso</label>
+                        <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required>
 
-                            <label>Estado</label>
-                            <input name="estado" value="{{ producto.estado }}" required>
+                        <label>Estado</label>
+                        <input name="estado" value="{{ producto.estado }}" required>
 
-                            <label>Categoría</label>
-                            <select name="categoria" required>
-                                {% for categoria in form.fields.categoria.queryset %}
-                                    <option value="{{ categoria.id }}" {% if categoria == producto.categoria %}selected{% endif %}>{{ categoria.descripcion }}</option>
-                                {% endfor %}
-                            </select>
+                        <label>Categoría</label>
+                        <select name="categoria" required>
+                            {% for categoria in form.fields.categoria.queryset %}
+                                <option value="{{ categoria.id }}" {% if categoria == producto.categoria %}selected{% endif %}>{{ categoria.descripcion }}</option>
+                            {% endfor %}
+                        </select>
 
-                            {% if request.user.rol.nombre == "Admin" %}
-                            <label>Empresa</label>
-                            <select name="empresa" required>
-                                {% for empresa in form.fields.empresa.queryset %}
-                                    <option value="{{ empresa.id }}" {% if empresa == producto.empresa %}selected{% endif %}>{{ empresa.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                            {% endif %}
+                        {% if request.user.rol.nombre == "Admin" %}
+                        <label>Empresa</label>
+                        <select name="empresa" required>
+                            {% for empresa in form.fields.empresa.queryset %}
+                                <option value="{{ empresa.id }}" {% if empresa == producto.empresa %}selected{% endif %}>{{ empresa.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        {% endif %}
 
-                            <div class="botones-modal">
-                                <button type="submit">Guardar</button>
-                                <button type="button" class="btn-cerrar-modal">Cancelar</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="botones-modal">
+                            <button type="submit">Guardar</button>
+                            <button type="button" class="btn-cerrar-modal">Cancelar</button>
+                        </div>
+                    </form>
                 </div>
+            </div>
             {% endfor %}
         </tbody>
     </table>
+
+    <form id="form-imprimir" method="post">
+        {% csrf_token %}
+        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+            <button type="submit" formaction="{% url 'ReporteCSV' %}" class="btn-reporte">
+                <i class="fa-solid fa-file-csv"></i> Reporte CSV
+            </button>
+            <button type="submit" formaction="{% url 'ReportePDF' %}" class="btn-reporte">
+                <i class="fa-solid fa-file-pdf"></i> Reporte PDF
+            </button>
+        </div>
 </div>
 
 <!-- Modal Eliminar -->
@@ -197,5 +217,16 @@
 <!-- jQuery y DataTables -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tabla-usuarios').DataTable();
+
+        $('#check-todos').on('change', function () {
+            const checked = $(this).prop('checked');
+            $('input[name="productos_seleccionados"]').prop('checked', checked);
+        });
+    });
+</script>
 
 {% endblock %}

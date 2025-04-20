@@ -1,0 +1,31 @@
+/* ========== Botón Imprimir Seleccionados ========== */
+
+
+.btn-reporte {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: var(--color-primario);
+    color: var(--color-terciario);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: var(--tran-03);
+    margin: 1rem 0rem 1.5rem 0rem;
+}
+
+.btn-reporte:hover {
+    background-color: #750005;
+}
+
+
+/* ========== Checkbox para selección múltiple ========== */
+#tabla-usuarios th:first-child,
+#tabla-usuarios td:first-child {
+    text-align: center;
+    width: 50px;
+}
+
+#btn-imprimir-seleccionados i {
+    margin-right: 0.5rem; /* Ajusta el espacio entre el icono y el texto */
+}

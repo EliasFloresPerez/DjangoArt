@@ -67,3 +67,42 @@ class ProductoCrudView(LoginRequiredMixin, View):
             messages.error(request, f"Ocurrió un error inesperado: {e}")
 
         return redirect('producto_crud')
+
+class ReporteCSV(View):
+    def post(self, request, *args, **kwargs):
+
+
+        ids = request.POST.getlist('productos_seleccionados')
+        productos = Producto.objects.filter(id__in=ids)
+
+        if not productos.exists():
+            messages.error(request, "No se seleccionaron productos para el reporte. CSV")
+            return redirect('producto_crud')
+        
+        print("\n🖨️ Productos seleccionados CSV:")
+        for p in productos:
+            print(f"- ID: {p.id}, Nombre: {p.nombre}, Código: {p.codigo}, Empresa: {p.empresa.nombre}")
+
+        messages.success(request, f"Se imprimieron {productos.count()} productos en la consola del servidor. CSV")
+        return redirect('producto_crud')
+
+
+#Reporte PDF
+class ReportePDF(View):
+    def post(self, request, *args, **kwargs):
+
+
+        ids = request.POST.getlist('productos_seleccionados')
+        productos = Producto.objects.filter(id__in=ids)
+
+        if not productos.exists():
+            messages.error(request, "No se seleccionaron productos para el reporte. PDF")
+            return redirect('producto_crud')
+        
+        print("\n🖨️ Productos seleccionados PDF:")
+        for p in productos:
+            print(f"- ID: {p.id}, Nombre: {p.nombre}, Código: {p.codigo}, Empresa: {p.empresa.nombre}")
+
+        messages.success(request, f"Se imprimieron {productos.count()} productos en la consola del servidor. PDF")
+        return redirect('producto_crud')
+
