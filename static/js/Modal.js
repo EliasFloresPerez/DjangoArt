@@ -12,15 +12,26 @@ document.addEventListener("DOMContentLoaded", function () {
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = "block";
-                
-                // Si el modal es de eliminar, llenar el formulario con el ID y nombre del usuario
+
+                // Si el modal es para eliminar (compartido)
                 if (modalId === "confirmarEliminacionModal") {
+                    // Para eliminar un usuario
                     const usuarioId = this.getAttribute("data-usuario-id");
                     const usuarioNombre = this.getAttribute("data-usuario-nombre");
+                    const nivelId = this.getAttribute("data-nivel-id");
+                    const nivelActividad = this.getAttribute("data-nivel-actividad");
 
-                    // Asignamos el ID al campo oculto
-                    document.getElementById("usuario-id").value = usuarioId;
-                    document.getElementById("usuario-nombre").textContent = usuarioNombre;
+
+                    if (usuarioId && usuarioNombre) {
+                        document.getElementById("usuario-id").value = usuarioId;
+                        document.getElementById("usuario-nombre").textContent = usuarioNombre;
+                    }
+
+                    if (nivelId && nivelActividad) {
+                        // Rellenamos el modal con los valores correspondientes
+                        document.getElementById("nivel-id").value = nivelId;
+                        document.getElementById("nivel-actividad").textContent = nivelActividad;
+                    }
                 }
             }
         });

@@ -1,0 +1,132 @@
+{% extends base_template %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="{% static 'js/Modal.js' %}"></script>
+
+<div id="usuarios-container">
+    <h2>Gestión de Clasificaciones</h2>
+    <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Clasificación</button>
+
+    <table id="tabla-usuarios" class="display">
+        <thead>
+            <tr>
+                <th>Código Actividad</th>
+                <th>Descripción</th>
+                <th>Nivel</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clasificacion in clasificaciones %}
+            <tr>
+                <td>{{ clasificacion.cod_actividad }}</td>
+                <td>{{ clasificacion.descripcion }}</td>
+                <td>{{ clasificacion.nivel }}</td>
+                <td style="display: flex; gap: 0.3rem;">
+                    <button class="btn-editar" data-modal="editarModal{{ clasificacion.id }}" title="Editar">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="btn-eliminar"
+                            data-modal="confirmarEliminacionModal"
+                            data-usuario-id="{{ clasificacion.id }}"
+                            data-usuario-nombre="{{ clasificacion.descripcion }}"
+                            title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal Editar -->
+            <div id="editarModal{{ clasificacion.id }}" class="modal">
+                <div class="modal-contenido">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="id" value="{{ clasificacion.id }}">
+
+                        <h3>Editar Clasificación</h3>
+
+                        <label>Código Actividad</label>
+                        <input name="cod_actividad" value="{{ clasificacion.cod_actividad }}" required>
+
+                        <label>Descripción</label>
+                        <input name="descripcion" value="{{ clasificacion.descripcion }}" required>
+
+                        <label>Nivel</label>
+                        <select name="nivel" required>
+                            {% for nivel in form.fields.nivel.queryset %}
+                                <option value="{{ nivel.id }}" {% if nivel == clasificacion.nivel %}selected{% endif %}>
+                                    {{ nivel }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="botones-modal">
+                            <button type="submit">Guardar</button>
+                            <button type="button" class="btn-cerrar-modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Crear -->
+<div id="crearModal" class="modal">
+    <div class="modal-contenido">
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+
+            <h3>Crear Clasificación</h3>
+
+            <label>Código Actividad</label>
+            <input name="cod_actividad" required>
+
+            <label>Descripción</label>
+            <input name="descripcion" required>
+
+            <label>Nivel</label>
+            <select name="nivel" required>
+                {% for nivel in form.fields.nivel.queryset %}
+                    <option value="{{ nivel.id }}">{{ nivel }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="botones-modal">
+                <button type="submit">Crear</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div id="confirmarEliminacionModal" class="modal modalEliminar">
+    <div class="modal-contenido">
+        <h3>¿Estás seguro de que quieres eliminar la clasificación <span id="usuario-nombre"></span>?</h3>
+        <form method="post" id="form-eliminar-usuario">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" id="usuario-id">
+            <div class="botones-modal">
+                <button type="submit">Sí, eliminar</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+{% endblock %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Aplicaciones.Header',
     'Aplicaciones.Usuarios',
     'Aplicaciones.Niveles',
+    'Aplicaciones.Clasificacion',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR,'Aplicaciones/Header/Plantillas'),
                  os.path.join(BASE_DIR,'Aplicaciones/Usuarios/Plantillas'),
-                 os.path.join(BASE_DIR,'Aplicaciones/Niveles/Plantillas')],
+                 os.path.join(BASE_DIR,'Aplicaciones/Niveles/Plantillas'),
+                 os.path.join(BASE_DIR,'Aplicaciones/Clasificacion/Plantillas')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
