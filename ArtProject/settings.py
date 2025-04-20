@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Aplicaciones.Niveles',
     'Aplicaciones.Clasificacion',
     'Aplicaciones.Empresa',
+    'Aplicaciones.Categoria',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,8 @@ TEMPLATES = [
                  os.path.join(BASE_DIR,'Aplicaciones/Usuarios/Plantillas'),
                  os.path.join(BASE_DIR,'Aplicaciones/Niveles/Plantillas'),
                  os.path.join(BASE_DIR,'Aplicaciones/Clasificacion/Plantillas'),
-                 os.path.join(BASE_DIR,'Aplicaciones/Empresa/Plantillas'),],
+                 os.path.join(BASE_DIR,'Aplicaciones/Empresa/Plantillas'),
+                 os.path.join(BASE_DIR,'Aplicaciones/Categoria/Plantillas')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

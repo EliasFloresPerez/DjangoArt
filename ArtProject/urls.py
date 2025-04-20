@@ -22,6 +22,7 @@ from Aplicaciones.Usuarios.views import UsuarioCrudView
 from Aplicaciones.Niveles.views import NivelCrudView
 from Aplicaciones.Clasificacion.views import ClasificacionCrudView
 from Aplicaciones.Empresa.views import EmpresaCrudView
+from Aplicaciones.Categoria.views import CategoriaCrudView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +34,7 @@ urlpatterns = [
     path('niveles/', NivelCrudView.as_view(), name='niveles_crud'),  # URL para CRUD de niveles
     path('clasificacion/', ClasificacionCrudView.as_view(), name='clasificaciones_crud'),  # URL para CRUD de clasificaciones
     path('empresas/', EmpresaCrudView.as_view(), name='empresa_crud'),  # URL para CRUD de empresas
+    path('categorias/', CategoriaCrudView.as_view(), name='categoria_crud'),  # URL para listar categorías
 
     
 
