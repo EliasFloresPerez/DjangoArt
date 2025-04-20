@@ -222,6 +222,39 @@
 }
 
 
+.mensaje-contenedor {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+
+.mensaje {
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+    animation: fadeOut 3s forwards;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mensaje.error {
+    background-color: #e74c3c;
+}
+
+.mensaje.success {
+    background-color: #2ecc71;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
+
 /* ========== Media Queries para Responsividad ========== */
 
 @media screen and (max-width: 768px) {
