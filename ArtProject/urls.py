@@ -21,6 +21,7 @@ from Aplicaciones.Header.views import login_view,home_view, RecuperarContrasenaV
 from Aplicaciones.Usuarios.views import UsuarioCrudView
 from Aplicaciones.Niveles.views import NivelCrudView
 from Aplicaciones.Clasificacion.views import ClasificacionCrudView
+from Aplicaciones.Empresa.views import EmpresaCrudView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,8 @@ urlpatterns = [
     path('usuarios/', UsuarioCrudView.as_view(), name='usuarios_crud'),  # URL para CRUD de usuarios
     path('niveles/', NivelCrudView.as_view(), name='niveles_crud'),  # URL para CRUD de niveles
     path('clasificacion/', ClasificacionCrudView.as_view(), name='clasificaciones_crud'),  # URL para CRUD de clasificaciones
+    path('empresas/', EmpresaCrudView.as_view(), name='empresa_crud'),  # URL para CRUD de empresas
+
     
 
 ]

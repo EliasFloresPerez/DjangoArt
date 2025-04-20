@@ -1,0 +1,163 @@
+{% extends base_template %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="{% static 'js/Modal.js' %}"></script>
+
+<div id="usuarios-container">
+    <h2>Gestión de Empresas</h2>
+    <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Empresa</button>
+
+    <table id="tabla-usuarios" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Actividad Económica</th>
+                <th>Razón Social</th>
+                <th>Representante</th>
+                <th>Teléfono</th>
+                <th>RUC</th>
+                <th>Clasificación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for empresa in empresas %}
+            <tr>
+                <td>{{ empresa.id }}</td>
+                <td>{{ empresa.nombre }}</td>
+                <td>{{ empresa.actividad_economica }}</td>
+                <td>{{ empresa.razon_social }}</td>
+                <td>{{ empresa.representante }}</td>
+                <td>{{ empresa.telefono }}</td>
+                <td>{{ empresa.ruc }}</td>
+                <td>{{ empresa.clasificacion.descripcion }}</td>
+                <td style="display: flex; gap: 0.3rem;">
+                    <button class="btn-editar" data-modal="editarModal{{ empresa.id }}" title="Editar">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="btn-eliminar" 
+                            data-modal="confirmarEliminacionModal" 
+                            data-usuario-id="{{ empresa.id }}" 
+                            data-usuario-nombre="{{ empresa.nombre }}" 
+                            title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal editar -->
+            <div id="editarModal{{ empresa.id }}" class="modal">
+                <div class="modal-contenido">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="id" value="{{ empresa.id }}">
+
+                        <h3>Editar Empresa</h3>
+
+                        <label>Nombre</label>
+                        <input name="nombre" value="{{ empresa.nombre }}" required>
+
+                        <label>Actividad Económica</label>
+                        <input name="actividad_economica" value="{{ empresa.actividad_economica }}" required>
+
+                        <label>Razón Social</label>
+                        <input name="razon_social" value="{{ empresa.razon_social }}" required>
+
+                        <label>Representante</label>
+                        <input name="representante" value="{{ empresa.representante }}" required>
+
+                        <label>Teléfono</label>
+                        <input name="telefono" value="{{ empresa.telefono }}" required>
+
+                        <label>RUC</label>
+                        <input name="ruc" value="{{ empresa.ruc }}" required>
+
+                        <label>Clasificación</label>
+                        <select name="clasificacion" required>
+                            {% for clasificacion in form.fields.clasificacion.queryset %}
+                                <option value="{{ clasificacion.id }}" {% if clasificacion == empresa.clasificacion %}selected{% endif %}>
+                                    {{ clasificacion.descripcion }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="botones-modal">
+                            <button type="submit">Guardar</button>
+                            <button type="button" class="btn-cerrar-modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Eliminar -->
+<div id="confirmarEliminacionModal" class="modal modalEliminar">
+    <div class="modal-contenido">
+        <h3>¿Estás seguro de que quieres eliminar la empresa <span id="usuario-nombre"></span>?</h3>
+        <form method="post" id="form-eliminar-usuario">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" id="usuario-id">
+            <div class="botones-modal">
+                <button type="submit">Sí, eliminar</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Crear -->
+<div id="crearModal" class="modal">
+    <div class="modal-contenido">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+
+            <h3>Crear Empresa</h3>
+
+            <label>Nombre</label>
+            <input name="nombre" required>
+
+            <label>Actividad Económica</label>
+            <input name="actividad_economica" required>
+
+            <label>Razón Social</label>
+            <input name="razon_social" required>
+
+            <label>Representante</label>
+            <input name="representante" required>
+
+            <label>Teléfono</label>
+            <input name="telefono" required>
+
+            <label>RUC</label>
+            <input name="ruc" required>
+
+            <label>Clasificación</label>
+            <select name="clasificacion" required>
+                {% for clasificacion in form.fields.clasificacion.queryset %}
+                    <option value="{{ clasificacion.id }}">{{ clasificacion.descripcion }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="botones-modal">
+                <button type="submit">Crear</button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JS y DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}

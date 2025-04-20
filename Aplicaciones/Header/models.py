@@ -66,7 +66,7 @@ class Empresa(models.Model):
     representante = models.CharField(max_length=200)
     telefono = models.CharField(max_length=20)
     ruc = models.CharField(max_length=20)
-    clasificacion = models.ForeignKey(Clasificacion, on_delete=models.SET_NULL, null=True, unique=True)
+    clasificacion = models.ForeignKey(Clasificacion, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.nombre
