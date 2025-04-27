@@ -2,6 +2,16 @@ from django import forms
 from ..Header.models import Producto
 
 class ProductoForm(forms.ModelForm):
+    ESTADOS_PRODUCTO = [
+        ('Bueno', 'Bueno'),
+        ('Regular', 'Regular'),
+        ('Malo', 'Malo'),
+        ('En reparación', 'En reparación'),
+        ('Dañado', 'Dañado'),
+    ]
+
+    estado = forms.ChoiceField(choices=ESTADOS_PRODUCTO)
+
     class Meta:
         model = Producto
         fields = [
@@ -14,5 +24,5 @@ class ProductoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Empresa no es requerida en el formulario (se puede setear manualmente en la view)
+        # Empresa no es requerida en el formulario
         self.fields['empresa'].required = False

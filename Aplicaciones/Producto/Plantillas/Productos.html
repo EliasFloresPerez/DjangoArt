@@ -19,9 +19,12 @@
     <h2>Gestión de Productos</h2>
     <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Producto</button>
 
-
-
-
+    <div style="margin: 1rem 0; display: flex; gap: 1rem;">
+        <input type="text" id="buscar-nombre" placeholder="Buscar por nombre" style="padding: 0.5rem;">
+        <input type="text" id="buscar-empresa" placeholder="Buscar por empresa" style="padding: 0.5rem;">
+        <input type="text" id="buscar-categoria" placeholder="Buscar por categoría" style="padding: 0.5rem;">
+        <input type="text" id="buscar-estado" placeholder="Buscar por estado" style="padding: 0.5rem;">
+    </div>
 
     <table id="tabla-usuarios" class="display">
         <thead>
@@ -43,14 +46,12 @@
         <tbody>
             {% for producto in productos %}
             <tr>
-                <td>
-                    <input type="checkbox" form="form-imprimir" name="productos_seleccionados" value="{{ producto.id }}">
-                </td>
+                <td><input type="checkbox" form="form-imprimir" name="productos_seleccionados" value="{{ producto.id }}"></td>
                 <td>{{ producto.id }}</td>
                 <td>{{ producto.codigo }}</td>
                 <td>{{ producto.nombre }}</td>
                 <td>{{ producto.categoria.descripcion }}</td>
-                <td>{{ producto.peso }}</td>
+                <td>{{ producto.peso }} Kg</td>
                 <td>{{ producto.estado }}</td>
                 <td>{{ producto.empresa.nombre }}</td>
                 <td>{{ producto.cantidad }}</td>
@@ -60,11 +61,7 @@
                     <button class="btn-editar" data-modal="editarModal{{ producto.id }}" title="Editar">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button class="btn-eliminar" 
-                            data-modal="confirmarEliminacionModal" 
-                            data-usuario-id="{{ producto.id }}" 
-                            data-usuario-nombre="{{ producto.nombre }}" 
-                            title="Eliminar">
+                    <button class="btn-eliminar" data-modal="confirmarEliminacionModal" data-usuario-id="{{ producto.id }}" data-usuario-nombre="{{ producto.nombre }}" title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -79,6 +76,7 @@
                         <input type="hidden" name="id" value="{{ producto.id }}">
 
                         <h3>Editar Producto</h3>
+
                         <label>Código</label>
                         <input name="codigo" value="{{ producto.codigo }}" required>
 
@@ -88,7 +86,7 @@
                         <label>Descripción</label>
                         <input name="descripcion" value="{{ producto.descripcion }}" required>
 
-                        <label>Peso</label>
+                        <label>Peso(Kg)</label>
                         <input name="peso" type="number" step="0.01" value="{{ producto.peso }}" required>
 
                         <label>Cantidad</label>
@@ -101,7 +99,13 @@
                         <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required>
 
                         <label>Estado</label>
-                        <input name="estado" value="{{ producto.estado }}" required>
+                        <select name="estado" required>
+                            <option value="Bueno" {% if producto.estado == 'Bueno' %}selected{% endif %}>Bueno</option>
+                            <option value="Regular" {% if producto.estado == 'Regular' %}selected{% endif %}>Regular</option>
+                            <option value="Malo" {% if producto.estado == 'Malo' %}selected{% endif %}>Malo</option>
+                            <option value="En reparación" {% if producto.estado == 'En reparación' %}selected{% endif %}>En reparación</option>
+                            <option value="Dañado" {% if producto.estado == 'Dañado' %}selected{% endif %}>Dañado</option>
+                        </select>
 
                         <label>Categoría</label>
                         <select name="categoria" required>
@@ -140,6 +144,7 @@
                 <i class="fa-solid fa-file-pdf"></i> Reporte PDF
             </button>
         </div>
+    </form>
 </div>
 
 <!-- Modal Eliminar -->
@@ -166,6 +171,7 @@
             <input type="hidden" name="action" value="create">
 
             <h3>Crear Producto</h3>
+
             <label>Código</label>
             <input name="codigo" type="text" required>
 
@@ -175,7 +181,7 @@
             <label>Descripción</label>
             <input name="descripcion" required>
 
-            <label>Peso</label>
+            <label>Peso(Kg)</label>
             <input name="peso" type="number" step="0.01" required>
 
             <label>Cantidad</label>
@@ -188,7 +194,14 @@
             <input name="fecha_ingreso" type="date" required>
 
             <label>Estado</label>
-            <input name="estado" type="text" required>
+            <select name="estado" required>
+                <option value="">Selecciona un estado</option>
+                <option value="Bueno">Bueno</option>
+                <option value="Regular">Regular</option>
+                <option value="Malo">Malo</option>
+                <option value="En reparación">En reparación</option>
+                <option value="Dañado">Dañado</option>
+            </select>
 
             <label>Categoría</label>
             <select name="categoria" required>
@@ -220,13 +233,25 @@
 
 <script>
     $(document).ready(function () {
-        $('#tabla-usuarios').DataTable();
+        var tabla = $('#tabla-usuarios').DataTable();
 
         $('#check-todos').on('change', function () {
             const checked = $(this).prop('checked');
             $('input[name="productos_seleccionados"]').prop('checked', checked);
         });
+
+        $('#buscar-nombre').on('keyup', function () {
+            tabla.column(3).search(this.value).draw();
+        });
+        $('#buscar-categoria').on('keyup', function () {
+            tabla.column(4).search(this.value).draw();
+        });
+        $('#buscar-empresa').on('keyup', function () {
+            tabla.column(7).search(this.value).draw();
+        });
+        $('#buscar-estado').on('keyup', function () {
+            tabla.column(6).search(this.value).draw();
+        });
     });
 </script>
-
 {% endblock %}
