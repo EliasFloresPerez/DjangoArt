@@ -11,6 +11,12 @@ from django.conf import settings
 from .models import Usuario
 
 
+
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
+from .models import Producto
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')  # Redirige si ya está logueado
@@ -38,21 +44,54 @@ def logout_view(request):
 
 
 
-#Vista del Home
 def home_view(request):
     if request.user.is_authenticated:
-       
 
+        # Datos para gráfico de línea: productos ingresados por mes
+        productos_por_fecha = (
+            Producto.objects
+            .annotate(mes=TruncMonth('fecha_ingreso'))
+            .values('mes')
+            .annotate(total=Count('id'))
+            .order_by('mes')
+        )
+
+        line_chart_data = {
+            'fechas': [item['mes'].strftime('%Y-%m') for item in productos_por_fecha],
+            'totales': [item['total'] for item in productos_por_fecha]
+        }
+
+        # Datos para gráfico pastel: top 10 productos por peso
+        top_productos_pesados = (
+            Producto.objects
+            .order_by('-peso')[:10]
+            .values('nombre', 'peso')
+        )
+
+        pie_chart_data = [
+            {'name': item['nombre'], 'value': float(item['peso'])}
+            for item in top_productos_pesados
+        ]
+
+        # Datos resumen
+        total_productos = Producto.objects.count()
+        total_peso = Producto.objects.aggregate(total=Sum('peso'))['total'] or 0
 
         if request.user.rol.nombre == "Admin":
             base_template = 'sidebaradmin.html'
         else:
             base_template = 'sidebaruser.html'
 
-        return render(request, 'home.html', {'base_template': base_template})
+        return render(request, 'home.html', {
+            'base_template': base_template,
+            'line_chart_data': line_chart_data,
+            'pie_chart_data': pie_chart_data,
+            'total_productos': total_productos,
+            'total_peso': float(total_peso),
+        })
+
     else:
         return redirect('login')
-
     
 
 

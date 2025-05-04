@@ -1,7 +1,99 @@
 {% extends base_template %}
-
+{% load static %}
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    Aquí va el Dashboard dependiendo del rol
+
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+
+<h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+
+<div class="dashboard-container">
+    <!-- Métricas -->
+    <div class="metric-box">
+        <h3>Total de Productos</h3>
+        <p>{{ total_productos }}</p>
+    </div>
+    <div class="metric-box">
+        <h3>Total Peso (kg)</h3>
+        <p>{{ total_peso }}</p>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="chart-container">
+        <div id="pieChart" class="chart-box"></div>
+        <div id="lineChart" class="chart-box"></div>
+    </div>
+</div>
+
+<!-- Bloques de datos JSON seguros -->
+{{ line_chart_data.fechas|json_script:"fechas-data" }}
+{{ line_chart_data.totales|json_script:"totales-data" }}
+{{ pie_chart_data|json_script:"pie-data" }}
+
+<!-- ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+<script>
+    // Parsear datos desde los bloques ocultos
+    const fechas = JSON.parse(document.getElementById('fechas-data').textContent);
+    const totales = JSON.parse(document.getElementById('totales-data').textContent);
+    const pieData = JSON.parse(document.getElementById('pie-data').textContent);
+
+    // Gráfico de línea: Productos ingresados por mes
+    const lineChart = echarts.init(document.getElementById('lineChart'));
+    lineChart.setOption({
+        title: {
+            text: 'Productos ingresados por mes'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            type: 'category',
+            data: fechas
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: 'Cantidad',
+            data: totales,
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                color: '#5470C6'
+            }
+        }]
+    });
+
+    // Gráfico de pastel: 10 productos más pesados
+    const pieChart = echarts.init(document.getElementById('pieChart'));
+    pieChart.setOption({
+        title: {
+            text: 'Top 10 productos por peso',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left'
+        },
+        series: [{
+            name: 'Peso (kg)',
+            type: 'pie',
+            radius: '50%',
+            data: pieData,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    });
+</script>
 {% endblock %}
