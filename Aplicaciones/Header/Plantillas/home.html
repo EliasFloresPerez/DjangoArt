@@ -6,10 +6,23 @@
 
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-
 <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
 
 <div class="dashboard-container">
+
+    <!-- Selector de empresa (solo visible si hay más de una) -->
+    {% if empresas|length > 1 %}
+    <form method="get" class="mb-4">
+        <label for="empresa" class="mr-2 font-semibold">Filtrar por empresa:</label>
+        <select name="empresa" id="empresa" onchange="this.form.submit()" class="p-2 border rounded">
+            <option value="todas" {% if selected_empresa_id == "todas" %}selected{% endif %}>Todas las empresas</option>
+            {% for empresa in empresas %}
+                <option value="{{ empresa.id }}" {% if empresa.id|stringformat:"s" == selected_empresa_id %}selected{% endif %}>{{ empresa.nombre }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    {% endif %}
+
     <!-- Métricas -->
     <div class="metric-box">
         <h3>Total de Productos</h3>
@@ -35,52 +48,30 @@
 <!-- ECharts -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
 <script>
-    // Parsear datos desde los bloques ocultos
     const fechas = JSON.parse(document.getElementById('fechas-data').textContent);
     const totales = JSON.parse(document.getElementById('totales-data').textContent);
     const pieData = JSON.parse(document.getElementById('pie-data').textContent);
 
-    // Gráfico de línea: Productos ingresados por mes
     const lineChart = echarts.init(document.getElementById('lineChart'));
     lineChart.setOption({
-        title: {
-            text: 'Productos ingresados por mes'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        xAxis: {
-            type: 'category',
-            data: fechas
-        },
-        yAxis: {
-            type: 'value'
-        },
+        title: { text: 'Productos ingresados por mes' },
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: fechas },
+        yAxis: { type: 'value' },
         series: [{
             name: 'Cantidad',
             data: totales,
             type: 'line',
             smooth: true,
-            lineStyle: {
-                color: '#5470C6'
-            }
+            lineStyle: { color: '#5470C6' }
         }]
     });
 
-    // Gráfico de pastel: 10 productos más pesados
     const pieChart = echarts.init(document.getElementById('pieChart'));
     pieChart.setOption({
-        title: {
-            text: 'Top 10 productos por peso',
-            left: 'center'
-        },
-        tooltip: {
-            trigger: 'item'
-        },
-        legend: {
-            orient: 'vertical',
-            left: 'left'
-        },
+        title: { text: 'Top 10 productos por peso', left: 'center' },
+        tooltip: { trigger: 'item' },
+        legend: { orient: 'vertical', left: 'left' },
         series: [{
             name: 'Peso (kg)',
             type: 'pie',

@@ -8,7 +8,7 @@ from django.views import View
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
-from .models import Usuario
+from .models import Usuario, Empresa, Rol, Clasificacion, Nivel
 
 
 
@@ -43,56 +43,67 @@ def logout_view(request):
 
 
 
-
 def home_view(request):
-    if request.user.is_authenticated:
-
-        # Datos para gráfico de línea: productos ingresados por mes
-        productos_por_fecha = (
-            Producto.objects
-            .annotate(mes=TruncMonth('fecha_ingreso'))
-            .values('mes')
-            .annotate(total=Count('id'))
-            .order_by('mes')
-        )
-
-        line_chart_data = {
-            'fechas': [item['mes'].strftime('%Y-%m') for item in productos_por_fecha],
-            'totales': [item['total'] for item in productos_por_fecha]
-        }
-
-        # Datos para gráfico pastel: top 10 productos por peso
-        top_productos_pesados = (
-            Producto.objects
-            .order_by('-peso')[:10]
-            .values('nombre', 'peso')
-        )
-
-        pie_chart_data = [
-            {'name': item['nombre'], 'value': float(item['peso'])}
-            for item in top_productos_pesados
-        ]
-
-        # Datos resumen
-        total_productos = Producto.objects.count()
-        total_peso = Producto.objects.aggregate(total=Sum('peso'))['total'] or 0
-
-        if request.user.rol.nombre == "Admin":
-            base_template = 'sidebaradmin.html'
-        else:
-            base_template = 'sidebaruser.html'
-
-        return render(request, 'home.html', {
-            'base_template': base_template,
-            'line_chart_data': line_chart_data,
-            'pie_chart_data': pie_chart_data,
-            'total_productos': total_productos,
-            'total_peso': float(total_peso),
-        })
-
-    else:
+    if not request.user.is_authenticated:
         return redirect('login')
-    
+
+    is_admin = request.user.rol.nombre.lower() == "admin"
+    empresas = Empresa.objects.all() if is_admin else [request.user.empresa]
+
+    selected_empresa_id = request.GET.get('empresa')
+    mostrar_todas = is_admin and (not selected_empresa_id or selected_empresa_id == 'todas')
+
+    if mostrar_todas:
+        productos_qs = Producto.objects.all()
+    else:
+        try:
+            empresa_actual = Empresa.objects.get(pk=selected_empresa_id) if is_admin else request.user.empresa
+        except Empresa.DoesNotExist:
+            empresa_actual = request.user.empresa
+        productos_qs = Producto.objects.filter(empresa=empresa_actual)
+
+    # Datos para gráfico de línea
+    productos_por_fecha = (
+        productos_qs
+        .annotate(mes=TruncMonth('fecha_ingreso'))
+        .values('mes')
+        .annotate(total=Count('id'))
+        .order_by('mes')
+    )
+
+    line_chart_data = {
+        'fechas': [item['mes'].strftime('%Y-%m') for item in productos_por_fecha],
+        'totales': [item['total'] for item in productos_por_fecha]
+    }
+
+    # Gráfico pastel: Top 10 productos más pesados
+    top_productos_pesados = (
+        productos_qs
+        .order_by('-peso')[:10]
+        .values('nombre', 'peso')
+    )
+
+    pie_chart_data = [
+        {'name': item['nombre'], 'value': float(item['peso'])}
+        for item in top_productos_pesados
+    ]
+
+    # Totales
+    total_productos = productos_qs.count()
+    total_peso = productos_qs.aggregate(total=Sum('peso'))['total'] or 0
+
+    base_template = 'sidebaradmin.html' if is_admin else 'sidebaruser.html'
+
+    return render(request, 'home.html', {
+        'base_template': base_template,
+        'line_chart_data': line_chart_data,
+        'pie_chart_data': pie_chart_data,
+        'total_productos': total_productos,
+        'total_peso': float(total_peso),
+        'empresas': empresas,
+        'is_admin': is_admin,
+        'selected_empresa_id': selected_empresa_id or 'todas',
+    })
 
 
 

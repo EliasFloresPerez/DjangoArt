@@ -1,17 +1,43 @@
+/* Estilo general para el contenedor de la página */
 .dashboard-container {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
     padding: 2rem;
-    background-color: #f5f6fa;
+    background-color: var(--color-fondo);
     justify-content: center;
 }
 
+/* Estilo del formulario de selección de empresa */
+form {
+    display: flex;
+    flex-direction: column; /* Cambiar a columna para que el label esté encima del select */
+    align-items: flex-start; /* Alinear el formulario a la izquierda */
+    width: 100%;
+    margin-bottom: 2rem; /* Espacio debajo del formulario */
+}
+
+form label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem; /* Añadir espacio debajo del label */
+}
+
+select {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--color-borde-input);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color:var(--color-terciario);
+    cursor: pointer;
+}
+
+/* Estilo de las métricas */
 .metric-box {
-    border: 2px solid #ccc;
+    border: 2px solid var(--color-borde-input);
     border-radius: 10px;
     padding: 1rem 2rem;
-    background-color: white;
+    background-color: var(--color-terciario);
     width: 180px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -19,17 +45,18 @@
 
 .metric-box h3 {
     font-size: 1rem;
-    color: #555;
+    color: var(--color-secundario);
     margin-bottom: 0.5rem;
 }
 
 .metric-box p {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #2c3e50;
+    color:var(--color-secundario);
     margin: 0;
 }
 
+/* Estilo del contenedor de gráficos */
 .chart-container {
     display: flex;
     flex-direction: column;
@@ -38,11 +65,12 @@
     width: 100%;
 }
 
+/* Estilo de los contenedores de gráficos */
 .chart-box {
     width: 100%;
     max-width: 700px;
     height: 400px;
-    background-color: white;
+    background-color:  var(--color-terciario);
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
