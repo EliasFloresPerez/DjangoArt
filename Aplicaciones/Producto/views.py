@@ -53,6 +53,7 @@ class ProductoCrudView(LoginRequiredMixin, View):
                     producto.save()
                     messages.success(request, "Producto actualizado exitosamente.")
                 else:
+                    print(form.errors)
                     messages.error(request, "Error al actualizar producto.")
 
             elif action == 'delete' and producto_id:

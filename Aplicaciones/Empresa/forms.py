@@ -12,5 +12,7 @@ class EmpresaForm(forms.ModelForm):
             'representante', 
             'telefono', 
             'ruc', 
-            'clasificacion'
+            'clasificacion',
+            'ciudad',
+            'provincia'
         ]

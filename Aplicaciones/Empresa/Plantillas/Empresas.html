@@ -21,6 +21,7 @@
                 <th>Teléfono</th>
                 <th>RUC</th>
                 <th>Clasificación</th>
+                <th>Dirección</th> <!-- Nueva columna -->
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -35,6 +36,7 @@
                 <td>{{ empresa.telefono }}</td>
                 <td>{{ empresa.ruc }}</td>
                 <td>{{ empresa.clasificacion.descripcion }}</td>
+                <td>{{ empresa.provincia }}, {{ empresa.ciudad }}</td> <!-- Dirección -->
                 <td style="display: flex; gap: 0.3rem;">
                     <button class="btn-editar" data-modal="editarModal{{ empresa.id }}" title="Editar">
                         <i class="fas fa-pen"></i>
@@ -85,6 +87,12 @@
                                 </option>
                             {% endfor %}
                         </select>
+
+                        <label>Provincia</label>
+                        <input name="provincia" value="{{ empresa.provincia }}" required>
+
+                        <label>Ciudad</label>
+                        <input name="ciudad" value="{{ empresa.ciudad }}" required>
 
                         <div class="botones-modal">
                             <button type="submit">Guardar</button>
@@ -147,6 +155,12 @@
                     <option value="{{ clasificacion.id }}">{{ clasificacion.descripcion }}</option>
                 {% endfor %}
             </select>
+
+            <label>Provincia</label>
+            <input name="provincia" required>
+
+            <label>Ciudad</label>
+            <input name="ciudad" required>
 
             <div class="botones-modal">
                 <button type="submit">Crear</button>

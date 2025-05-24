@@ -87,24 +87,28 @@
                         <input name="descripcion" value="{{ producto.descripcion }}" required>
 
                         <label>Peso(Kg)</label>
-                        <input name="peso" type="number" step="0.01" value="{{ producto.peso }}" required>
+                        <input name="peso"  type= "number" value="{{ producto.peso }}" required>
 
                         <label>Cantidad</label>
                         <input name="cantidad" type="number" value="{{ producto.cantidad }}" required>
 
                         <label>Origen</label>
-                        <input name="origen" value="{{ producto.origen }}" required>
+                        <select name="origen" required>
+                            <option value="CONVENIO" {% if producto.origen == 'CONVENIO' %}selected{% endif %}>CONVENIO</option>
+                            <option value="CAMPAÑA" {% if producto.origen == 'CAMPAÑA' %}selected{% endif %}>CAMPAÑA</option>
+                            <option value="CONTACTO" {% if producto.origen == 'CONTACTO' %}selected{% endif %}>CONTACTO</option>
+                        </select>
 
                         <label>Fecha de Ingreso</label>
                         <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required>
 
                         <label>Estado</label>
                         <select name="estado" required>
+                            <option value="Excelente" {% if producto.estado == 'Excelente' %}selected{% endif %}>Excelente</option>
                             <option value="Bueno" {% if producto.estado == 'Bueno' %}selected{% endif %}>Bueno</option>
                             <option value="Regular" {% if producto.estado == 'Regular' %}selected{% endif %}>Regular</option>
                             <option value="Malo" {% if producto.estado == 'Malo' %}selected{% endif %}>Malo</option>
-                            <option value="En reparación" {% if producto.estado == 'En reparación' %}selected{% endif %}>En reparación</option>
-                            <option value="Dañado" {% if producto.estado == 'Dañado' %}selected{% endif %}>Dañado</option>
+                            
                         </select>
 
                         <label>Categoría</label>
@@ -188,7 +192,13 @@
             <input name="cantidad" type="number" required>
 
             <label>Origen</label>
-            <input name="origen" type="text" required>
+            
+            <select name="origen" required>
+                <option value="">Selecciona un Origen</option>
+                <option value="CONVENIO">CONVENIO</option>
+                <option value="CAMPAÑA">CAMPAÑA</option>
+                <option value="CONTACTO">CONTACTO</option>
+            </select>
 
             <label>Fecha de Ingreso</label>
             <input name="fecha_ingreso" type="date" required>
@@ -196,11 +206,10 @@
             <label>Estado</label>
             <select name="estado" required>
                 <option value="">Selecciona un estado</option>
+                <option value="Excelente">Excelente</option>
                 <option value="Bueno">Bueno</option>
                 <option value="Regular">Regular</option>
                 <option value="Malo">Malo</option>
-                <option value="En reparación">En reparación</option>
-                <option value="Dañado">Dañado</option>
             </select>
 
             <label>Categoría</label>

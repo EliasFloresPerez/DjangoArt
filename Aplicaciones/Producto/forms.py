@@ -3,11 +3,17 @@ from ..Header.models import Producto
 
 class ProductoForm(forms.ModelForm):
     ESTADOS_PRODUCTO = [
+        ('Excelente', 'Excelente'),
         ('Bueno', 'Bueno'),
         ('Regular', 'Regular'),
-        ('Malo', 'Malo'),
-        ('En reparación', 'En reparación'),
-        ('Dañado', 'Dañado'),
+        ('Malo', 'Malo')
+    ]
+
+    #Origenes Convenio, Campaña, Contacto
+    ORIGENES_PRODUCTO = [
+        ('Convenio', 'Convenio'),
+        ('Campaña', 'Campaña'),
+        ('Contacto', 'Contacto')
     ]
 
     estado = forms.ChoiceField(choices=ESTADOS_PRODUCTO)

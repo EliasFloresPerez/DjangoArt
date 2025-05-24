@@ -67,6 +67,9 @@ class Empresa(models.Model):
     telefono = models.CharField(max_length=20)
     ruc = models.CharField(max_length=20)
     clasificacion = models.ForeignKey(Clasificacion, on_delete=models.SET_NULL, null=True)
+    ciudad = models.CharField(max_length=200, null=True)
+    provincia = models.CharField(max_length=200, null=True)
+
 
     def __str__(self):
         return self.nombre
