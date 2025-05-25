@@ -15,6 +15,15 @@
 </div>
 {% endif %}
 
+Estilos
+
+<style>
+    
+    .disable {
+    opacity: 0.5 !important;
+    pointer-events: none ;
+}
+</style>
 <div id="usuarios-container">
     <h2>Gestión de Productos</h2>
     <button id="btn-agregar-usuario" data-modal="crearModal">Agregar Producto</button>
@@ -57,6 +66,7 @@
                 <td>{{ producto.cantidad }}</td>
                 <td>{{ producto.origen }}</td>
                 <td>{{ producto.fecha_ingreso }}</td>
+
                 <td style="display: flex; gap: 0.3rem;">
                     <button class="btn-editar" data-modal="editarModal{{ producto.id }}" title="Editar">
                         <i class="fas fa-pen"></i>
@@ -140,12 +150,10 @@
 
     <form id="form-imprimir" method="post">
         {% csrf_token %}
-        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
-            <button type="submit" formaction="{% url 'ReporteCSV' %}" class="btn-reporte">
-                <i class="fa-solid fa-file-csv"></i> Reporte CSV
-            </button>
-            <button type="submit" formaction="{% url 'ReportePDF' %}" class="btn-reporte">
-                <i class="fa-solid fa-file-pdf"></i> Reporte PDF
+        <div style="margin-top: 1rem; display: flex; justify-content: center;">
+            <!-- Cambiado a tipo button para evitar submit automático -->
+            <button type="button" id="btn-reporte-modal" class="btn-reporte" data-modal="reporteModal">
+                <i class="fa-solid fa-file-export"></i> Crear Reporte
             </button>
         </div>
     </form>
@@ -236,19 +244,85 @@
     </div>
 </div>
 
-<!-- jQuery y DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Modal Crear Reporte -->
+<div id="reporteModal" class="modal">
+    <div class="modal-contenido">
+        <form method="post" action="">
+            {% csrf_token %}
+            <h3>Generar Reporte</h3>
+
+            <!-- Campo para el título del reporte -->
+            <label for="titulo">Título del Reporte</label>
+            <input type="text" id="titulo" name="titulo" placeholder="Ej: RETIRO DE RAEE EN EL ÚLTIMO AÑO" required>
+
+            <label>Filtrar por</label>
+            <select id="tipo-filtro" name="tipo_filtro">
+                <option value="">Seleccione una opción</option>
+                <option value="empresa">Empresas</option>
+                <option value="categoria">Categoría</option>
+                <option value="origen">Origen</option>
+                <option value="estado">Estado</option>
+            </select>
+
+            <label>Rango de Fechas</label>
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="date" name="fecha_inicio">
+                <input type="date" name="fecha_fin">
+            </div>
+
+            <!-- Aquí se agregan inputs ocultos con productos seleccionados -->
+            <div id="productos-seleccionados-container"></div>
+
+            <div class="botones-modal" style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                <button type="submit" name="tipo_reporte" value="csv" formaction="{% url 'Reporte' %}" class="btn-reporte-modal" style="background-color: #970007;">
+                    <i class="fa-solid fa-file-csv"></i>Reporte CSV
+                </button>
+                <button type="submit" name="tipo_reporte" value="pdf" formaction="{% url 'Reporte' %}" class="btn-reporte-modal" style="background-color: #970007;">
+                    <i class="fa-solid fa-file-pdf"></i>Reporte PDF
+                </button>
+                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
 <script>
     $(document).ready(function () {
         var tabla = $('#tabla-usuarios').DataTable();
 
-        $('#check-todos').on('change', function () {
-            const checked = $(this).prop('checked');
-            $('input[name="productos_seleccionados"]').prop('checked', checked);
-        });
+        // === Función: Actualiza estado del botón de reporte según checkboxes seleccionados ===
+        function actualizarEstadoBotonReporte() {
+            const anyChecked = $('input[name="productos_seleccionados"]:checked').length > 0;
+            const btnReporte = $('#btn-reporte-modal');
 
+            if (anyChecked) {
+                btnReporte.removeClass('disable').prop('disabled', false);
+            } else {
+                btnReporte.addClass('disable').prop('disabled', true);
+            }
+        }
+
+        // === Función: Valida fechas de reporte ===
+        function validarFechasReporte() {
+            const fechaInicio = $('input[name="fecha_inicio"]').val();
+            const fechaFin = $('input[name="fecha_fin"]').val();
+            const ambosVacios = fechaInicio === '' && fechaFin === '';
+            const ambosLlenos = fechaInicio !== '' && fechaFin !== '';
+
+            const botonesReporte = $('.btn-reporte-modal');
+
+            if (ambosVacios || ambosLlenos) {
+                botonesReporte.prop('disabled', false).removeClass('disable');
+            } else {
+                botonesReporte.prop('disabled', true).addClass('disable');
+            }
+        }
+
+        // === Eventos de búsqueda por columna ===
         $('#buscar-nombre').on('keyup', function () {
             tabla.column(3).search(this.value).draw();
         });
@@ -261,6 +335,55 @@
         $('#buscar-estado').on('keyup', function () {
             tabla.column(6).search(this.value).draw();
         });
+
+        // === Checkbox "Seleccionar todos" ===
+        $('#check-todos').on('change', function () {
+            const checked = $(this).prop('checked');
+            $('input[name="productos_seleccionados"]').prop('checked', checked);
+            actualizarEstadoBotonReporte();
+        });
+
+        // === Checkbox individual de productos ===
+        $(document).on('change', 'input[name="productos_seleccionados"]', function () {
+            actualizarEstadoBotonReporte();
+
+            // Actualizar estado de "seleccionar todos"
+            const total = $('input[name="productos_seleccionados"]').length;
+            const checkedCount = $('input[name="productos_seleccionados"]:checked').length;
+            $('#check-todos').prop('checked', total === checkedCount);
+        });
+
+        // === Evento: Validar fechas al cambiar inputs ===
+        $(document).on('change', 'input[name="fecha_inicio"], input[name="fecha_fin"]', validarFechasReporte);
+
+        // === Preparar productos seleccionados al abrir modal de reporte ===
+        $('#btn-reporte-modal').on('click', function () {
+            validarFechasReporte(); // Validar fechas al abrir modal
+
+            $('#productos-seleccionados-container').empty();
+
+            $('input[name="productos_seleccionados"]:checked').each(function () {
+                var input = $('<input>', {
+                    type: 'hidden',
+                    name: 'productos_seleccionados',
+                    value: $(this).val()
+                });
+                $('#productos-seleccionados-container').append(input);
+            });
+        });
+
+        // === Preparar modal de eliminación ===
+        $('.btn-eliminar').on('click', function () {
+            var id = $(this).data('usuario-id');
+            var nombre = $(this).data('usuario-nombre');
+            $('#usuario-id').val(id);
+            $('#usuario-nombre').text(nombre);
+        });
+
+        // === Estado inicial al cargar la página ===
+        actualizarEstadoBotonReporte();
+        validarFechasReporte();
     });
 </script>
+
 {% endblock %}

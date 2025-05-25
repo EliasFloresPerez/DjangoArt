@@ -1,22 +1,12 @@
 /* ========== Botón Imprimir Seleccionados ========== */
 
 
-.btn-reporte {
-    margin-top: 1.5rem;
-    padding: 0.6rem 1.2rem;
-    background-color: var(--color-primario);
-    color: var(--color-terciario);
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: var(--tran-03);
-    margin: 1rem 0rem 1.5rem 0rem;
+
+.disable {
+    opacity: 0.5 !important;
+    pointer-events: none ;
 }
 
-.btn-reporte:hover {
-    background-color: #750005;
-}
 
 
 /* ========== Checkbox para selección múltiple ========== */

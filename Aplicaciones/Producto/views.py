@@ -4,6 +4,14 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ..Header.models import Producto, Usuario, Empresa
 from .forms import ProductoForm
+from django.utils.dateparse import parse_date
+from django.db.models import Q
+from django.db.models import Sum
+
+from .CrearPDF import generar_pdf_retiro_raee_bytes
+from .CrearCSV import generar_excel_retiro_raee_bytes
+from django.http import HttpResponse
+
 
 class ProductoCrudView(LoginRequiredMixin, View):
     template_name = 'Productos.html'
@@ -69,41 +77,89 @@ class ProductoCrudView(LoginRequiredMixin, View):
 
         return redirect('producto_crud')
 
-class ReporteCSV(View):
-    def post(self, request, *args, **kwargs):
 
+class Reporte(View):
+    def post(self, request, *args, **kwargs):
+        tipo_filtro = request.POST.get('tipo_filtro')  # empresa, categoria, origen, estado
+        tipo_reporte = request.POST.get('tipo_reporte')  # 'csv' o 'pdf'
+        fecha_inicio = request.POST.get('fecha_inicio')
+        fecha_fin = request.POST.get('fecha_fin')
+        tituloReporte = request.POST.get('titulo')
+        
+        
 
         ids = request.POST.getlist('productos_seleccionados')
         productos = Producto.objects.filter(id__in=ids)
+        
+        
+        fecha_inicio_obj = parse_date(fecha_inicio) if fecha_inicio else None
+        fecha_fin_obj = parse_date(fecha_fin) if fecha_fin else None
 
-        if not productos.exists():
-            messages.error(request, "No se seleccionaron productos para el reporte. CSV")
+        # Base queryset
+        #productos = Producto.objects.all()
+
+        print("Tipo de filtro:", tipo_filtro)
+        # Filtrar por rango de fechas si está definido
+        if fecha_inicio_obj and fecha_fin_obj:
+            productos = productos.filter(fecha_ingreso__range=(fecha_inicio_obj, fecha_fin_obj))
+
+        # Agrupar y sumar según el tipo de filtro
+        if tipo_filtro == 'empresa':
+            agrupado = productos.values('empresa__nombre').annotate(total_peso=Sum('peso'))
+        elif tipo_filtro == 'categoria':
+            agrupado = productos.values('categoria__descripcion').annotate(total_peso=Sum('peso'))
+        elif tipo_filtro == 'origen':
+            agrupado = productos.values('origen').annotate(total_peso=Sum('peso'))
+        elif tipo_filtro == 'estado':
+            agrupado = productos.values('estado').annotate(total_peso=Sum('peso'))
+        else:
+            messages.error(request, "Debe seleccionar un filtro válido.")
+            return redirect('producto_crud')
+
+        if not agrupado:
+            messages.error(request, "No se encontraron productos para el filtro seleccionado.")
+            return redirect('producto_crud')
+
+        #Cambios la clave de agrupacion para generar los reportes 
+        if tipo_filtro == 'empresa':
+            for p in agrupado:
+                p["Datos"] = p.pop("empresa__nombre")
+        elif tipo_filtro == 'categoria':
+            for p in agrupado:
+                p["Datos"] = p.pop("categoria__descripcion")
+        elif tipo_filtro == 'origen':
+            for p in agrupado:
+                p["Datos"] = p.pop("origen")
+        elif tipo_filtro == 'estado':
+            for p in agrupado:
+                p["Datos"] = p.pop("estado")
+
+        # Enviar a la función de generación del reporte según tipo
+        if tipo_reporte == 'csv':
+            messages.success(request, f"Reporte generado correctamente ({tipo_reporte.upper()})")
+            return self.generar_csv(tituloReporte, agrupado, tipo_filtro)
+        elif tipo_reporte == 'pdf':
+            messages.success(request, f"Reporte generado correctamente ({tipo_reporte.upper()})")
+            return self.generar_pdf(tituloReporte, agrupado, tipo_filtro)
+        else:
+            messages.error(request, "Tipo de reporte no válido.")
             return redirect('producto_crud')
         
-        print("\n🖨️ Productos seleccionados CSV:")
+
+    def generar_csv(self, titulo, productos, filtro):
+
         for p in productos:
-            print(f"- ID: {p.id}, Nombre: {p.nombre}, Código: {p.codigo}, Empresa: {p.empresa.nombre}")
+            print(p)
+        output = generar_excel_retiro_raee_bytes(productos, titulo, filtro)
+        response = HttpResponse(
+            output,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = f'attachment; filename="reporte_raee.xlsx"'
+        return response
 
-        messages.success(request, f"Se imprimieron {productos.count()} productos en la consola del servidor. CSV")
-        return redirect('producto_crud')
-
-
-#Reporte PDF
-class ReportePDF(View):
-    def post(self, request, *args, **kwargs):
-
-
-        ids = request.POST.getlist('productos_seleccionados')
-        productos = Producto.objects.filter(id__in=ids)
-
-        if not productos.exists():
-            messages.error(request, "No se seleccionaron productos para el reporte. PDF")
-            return redirect('producto_crud')
-        
-        print("\n🖨️ Productos seleccionados PDF:")
-        for p in productos:
-            print(f"- ID: {p.id}, Nombre: {p.nombre}, Código: {p.codigo}, Empresa: {p.empresa.nombre}")
-
-        messages.success(request, f"Se imprimieron {productos.count()} productos en la consola del servidor. PDF")
-        return redirect('producto_crud')
-
+    def generar_pdf(self, titulo, productos, filtro):
+        output = generar_pdf_retiro_raee_bytes(productos, titulo, filtro)
+        response = HttpResponse(output, content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="reporte_raee.pdf"'
+        return response

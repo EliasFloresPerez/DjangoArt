@@ -23,7 +23,7 @@ from Aplicaciones.Niveles.views import NivelCrudView
 from Aplicaciones.Clasificacion.views import ClasificacionCrudView
 from Aplicaciones.Empresa.views import EmpresaCrudView
 from Aplicaciones.Categoria.views import CategoriaCrudView
-from Aplicaciones.Producto.views import ProductoCrudView, ReporteCSV,ReportePDF
+from Aplicaciones.Producto.views import ProductoCrudView, Reporte
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,8 +37,8 @@ urlpatterns = [
     path('empresas/', EmpresaCrudView.as_view(), name='empresa_crud'),  # URL para CRUD de empresas
     path('categorias/', CategoriaCrudView.as_view(), name='categoria_crud'),  # URL para listar categorías
     path('productos/', ProductoCrudView.as_view(), name='producto_crud'),  # URL para listar productos
-    path('productos/imprimirCSV/', ReporteCSV.as_view(), name='ReporteCSV'),
-    path('productos/imprimirPDF/', ReportePDF.as_view(), name='ReportePDF'),
+    path('productos/imprimir/', Reporte.as_view(), name='Reporte'),
+
 
     
 
