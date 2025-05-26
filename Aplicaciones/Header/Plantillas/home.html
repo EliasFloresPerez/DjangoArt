@@ -48,6 +48,7 @@
 <!-- ECharts -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
 <script>
+   window.addEventListener('load', function () {
     const fechas = JSON.parse(document.getElementById('fechas-data').textContent);
     const totales = JSON.parse(document.getElementById('totales-data').textContent);
     const pieData = JSON.parse(document.getElementById('pie-data').textContent);
@@ -69,13 +70,24 @@
 
     const pieChart = echarts.init(document.getElementById('pieChart'));
     pieChart.setOption({
-        title: { text: 'Top 10 productos por peso', left: 'center' },
-        tooltip: { trigger: 'item' },
-        legend: { orient: 'vertical', left: 'left' },
+        title: {
+            text: 'Top 10 productos por peso',
+            left: 'center',
+            top: 20
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'horizontal', // 🔁 orientación horizontal
+            bottom: 0,            // ⬇ posición abajo
+            left: 'center'        // ↔ centrado
+        },
         series: [{
             name: 'Peso (kg)',
             type: 'pie',
             radius: '50%',
+            center: ['50%', '50%'], // asegúrate de que esté bien centrado
             data: pieData,
             emphasis: {
                 itemStyle: {
@@ -86,5 +98,18 @@
             }
         }]
     });
+
+    // 🔁 Esto se asegura de que se reacomode al cambiar tamaño
+    window.addEventListener('resize', function () {
+        lineChart.resize();
+        pieChart.resize();
+    });
+
+    // 🔧 Forzar resize por si se inicializó mal
+    setTimeout(() => {
+        lineChart.resize();
+        pieChart.resize();
+    }, 300);
+});
 </script>
 {% endblock %}

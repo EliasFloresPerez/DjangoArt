@@ -30,6 +30,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),  # URL para cerrar sesión
     path('home/', home_view, name='home'),
+    path('', lambda request: redirect('home')),  # Redirige la raíz al home
     path('recuperar/', RecuperarContrasenaView.as_view(), name='recuperar_contrasena'),
     path('usuarios/', UsuarioCrudView.as_view(), name='usuarios_crud'),  # URL para CRUD de usuarios
     path('niveles/', NivelCrudView.as_view(), name='niveles_crud'),  # URL para CRUD de niveles
@@ -38,6 +39,7 @@ urlpatterns = [
     path('categorias/', CategoriaCrudView.as_view(), name='categoria_crud'),  # URL para listar categorías
     path('productos/', ProductoCrudView.as_view(), name='producto_crud'),  # URL para listar productos
     path('productos/imprimir/', Reporte.as_view(), name='Reporte'),
+    
 
 
     

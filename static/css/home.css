@@ -1,38 +1,41 @@
-/* Estilo general para el contenedor de la página */
+
+/* Contenedor principal del dashboard */
 .dashboard-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 2rem;
     padding: 2rem;
     background-color: var(--color-fondo);
-    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
 }
 
-/* Estilo del formulario de selección de empresa */
+/* Formulario selector de empresa */
 form {
     display: flex;
-    flex-direction: column; /* Cambiar a columna para que el label esté encima del select */
-    align-items: flex-start; /* Alinear el formulario a la izquierda */
+    flex-direction: column;
+    align-items: flex-start;
     width: 100%;
-    margin-bottom: 2rem; /* Espacio debajo del formulario */
+    max-width: 600px;
+    margin-bottom: 1.5rem;
 }
 
 form label {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #333;
-    margin-bottom: 0.5rem; /* Añadir espacio debajo del label */
+    margin-bottom: 0.5rem;
 }
 
-select {
+form select {
     padding: 0.5rem 1rem;
     border: 2px solid var(--color-borde-input);
     border-radius: 5px;
     font-size: 1rem;
-    background-color:var(--color-terciario);
-    cursor: pointer;
+    background-color: var(--color-terciario);
+    width: 100%;
 }
 
-/* Estilo de las métricas */
+/* Métricas */
 .metric-box {
     border: 2px solid var(--color-borde-input);
     border-radius: 10px;
@@ -50,13 +53,13 @@ select {
 }
 
 .metric-box p {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
-    color:var(--color-secundario);
+    color: var(--color-secundario);
     margin: 0;
 }
 
-/* Estilo del contenedor de gráficos */
+/* Contenedor de gráficos */
 .chart-container {
     display: flex;
     flex-direction: column;
@@ -65,13 +68,45 @@ select {
     width: 100%;
 }
 
-/* Estilo de los contenedores de gráficos */
+/* Cada gráfico individual */
 .chart-box {
     width: 100%;
     max-width: 700px;
     height: 400px;
-    background-color:  var(--color-terciario);
+    background-color: var(--color-terciario);
     padding: 1rem;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 5px;
+    }
+
+    .metric-box {
+        width: 60%;
+        max-width: 300px;
+        padding: 1rem;
+    }
+
+    .metric-box p {
+        font-size: 1.8rem;
+    }
+
+    form {
+        max-width: 100%;
+    }
+
+    .chart-box {
+        height: 280px;
+        padding: 0.75rem;
+    }
+
+    form select {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+    }
 }
