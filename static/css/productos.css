@@ -19,3 +19,16 @@
 #btn-imprimir-seleccionados i {
     margin-right: 0.5rem; /* Ajusta el espacio entre el icono y el texto */
 }
+
+
+
+
+
+@media screen and (max-width: 480px) {
+    #reporteModal .modal-contenido .Fecha{
+    
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}

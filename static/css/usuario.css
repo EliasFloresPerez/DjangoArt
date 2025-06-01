@@ -324,9 +324,10 @@
     .modal-contenido h3 {
         font-size: 1rem;
     }
-    .modalEliminar .modal-contenido {
-        max-width: 90% !important; /* Tamaño más pequeño */
-        
-    }
     
+    .modal-contenido {
+        max-width: 350px !important;  /* Puedes ajustar según tu necesidad */
+        margin-left: 20px !important;
+        margin-right: auto !important;
+    }
 }
