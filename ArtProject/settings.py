@@ -27,6 +27,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
     'artproject-892039523882.europe-west1.run.app',
     'localhost',
+    '*'
 ]
 
 # Application definition
