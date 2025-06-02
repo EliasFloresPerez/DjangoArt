@@ -24,6 +24,8 @@ from Aplicaciones.Clasificacion.views import ClasificacionCrudView
 from Aplicaciones.Empresa.views import EmpresaCrudView
 from Aplicaciones.Categoria.views import CategoriaCrudView
 from Aplicaciones.Producto.views import ProductoCrudView, Reporte
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -50,3 +52,7 @@ urlpatterns = [
 urlpatterns += [
     path('<path:path>/', lambda request, path: redirect('home')),  # Ruta comodín
 ]
+
+# Al final del archivo, después de urlpatterns += [...]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -10,7 +10,7 @@ class EmpresaCrudView(AdminRequiredMixin, View):
     template_name = 'Empresas.html'
 
     def get(self, request, *args, **kwargs):
-        empresas = Empresa.objects.all()
+        empresas = Empresa.objects.exclude(id=1)
         form = EmpresaForm()
 
         context = {
@@ -29,17 +29,18 @@ class EmpresaCrudView(AdminRequiredMixin, View):
             print(form)
             print(form.errors)
             if form.is_valid():
-                
                 form.save()
 
         elif action == 'edit' and empresa_id:
             empresa = get_object_or_404(Empresa, pk=empresa_id)
-            form = EmpresaForm(request.POST, instance=empresa)
-            if form.is_valid():
-                form.save()
+            if empresa.id != 1:
+                form = EmpresaForm(request.POST, instance=empresa)
+                if form.is_valid():
+                    form.save()
 
         elif action == 'delete' and empresa_id:
             empresa = get_object_or_404(Empresa, pk=empresa_id)
-            empresa.delete()
+            if empresa.id != 1:
+                empresa.delete()
 
         return redirect('empresa_crud')

@@ -32,3 +32,5 @@ class ProductoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Empresa no es requerida en el formulario
         self.fields['empresa'].required = False
+        # Excluir empresa con id 1 de las opciones
+        self.fields['empresa'].queryset = self.fields['empresa'].queryset.exclude(id=1)

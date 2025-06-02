@@ -8,7 +8,8 @@ class ClasificacionCrudView(AdminRequiredMixin, View):
     template_name = 'clasificaciones.html'
 
     def get(self, request, *args, **kwargs):
-        clasificaciones = Clasificacion.objects.select_related('nivel').all()
+        clasificaciones = Clasificacion.objects.select_related('nivel').exclude(id=1)
+
         form = ClasificacionForm()
         
         context = {
@@ -29,12 +30,14 @@ class ClasificacionCrudView(AdminRequiredMixin, View):
 
         elif action == 'edit' and clasificacion_id:
             clasificacion = get_object_or_404(Clasificacion, pk=clasificacion_id)
-            form = ClasificacionForm(request.POST, instance=clasificacion)
-            if form.is_valid():
-                form.save()
+            if clasificacion.id != 1:
+                form = ClasificacionForm(request.POST, instance=clasificacion)
+                if form.is_valid():
+                    form.save()
 
         elif action == 'delete' and clasificacion_id:
             clasificacion = get_object_or_404(Clasificacion, pk=clasificacion_id)
-            clasificacion.delete()
+            if clasificacion.id != 1:
+                clasificacion.delete()
 
         return redirect('clasificaciones_crud')

@@ -11,7 +11,8 @@ class NivelCrudView(AdminRequiredMixin, View):
     template_name = 'Niveles.html'  # tu template principal
 
     def get(self, request, *args, **kwargs):
-        niveles = Nivel.objects.all()
+        niveles = Nivel.objects.exclude(id=1)
+
         form = NivelForm()
 
         context = {
@@ -32,12 +33,14 @@ class NivelCrudView(AdminRequiredMixin, View):
 
         elif action == 'edit' and nivel_id:
             nivel = get_object_or_404(Nivel, pk=nivel_id)
-            form = NivelForm(request.POST, instance=nivel)
-            if form.is_valid():
-                form.save()
+            if nivel.id != 1:
+                form = NivelForm(request.POST, instance=nivel)
+                if form.is_valid():
+                    form.save()
 
         elif action == 'delete' and nivel_id:
             nivel = get_object_or_404(Nivel, pk=nivel_id)
-            nivel.delete()
+            if nivel.id != 1:
+                nivel.delete()
 
         return redirect('niveles_crud')

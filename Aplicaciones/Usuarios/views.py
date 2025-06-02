@@ -13,11 +13,17 @@ class UsuarioForm(forms.ModelForm):
         model = Usuario
         fields = ['correo_claro', 'nombre', 'cedula', 'telefono', 'password', 'empresa', 'rol']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Excluir empresa con id=1 en las opciones del campo empresa
+        self.fields['empresa'].queryset = self.fields['empresa'].queryset.exclude(id=1)
+
 class UsuarioCrudView(AdminRequiredMixin, View):
     template_name_base = 'Usuario.html'
 
     def get(self, request, *args, **kwargs):
-        usuarios = Usuario.objects.all()
+        usuarios = Usuario.objects.exclude(id__in=[1, 2])
+
         form = UsuarioForm()  # Formulario vacío para crear un nuevo usuario
 
         context = {

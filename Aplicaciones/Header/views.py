@@ -43,24 +43,35 @@ def logout_view(request):
 
 
 
+from django.db.models.functions import TruncMonth
+from django.db.models import Count, Sum
+
 def home_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
     is_admin = request.user.rol.nombre.lower() == "admin"
-    empresas = Empresa.objects.all() if is_admin else [request.user.empresa]
+    # Excluir empresa con id=1 en la lista de empresas
+    empresas = Empresa.objects.exclude(id=1) if is_admin else [request.user.empresa]
 
     selected_empresa_id = request.GET.get('empresa')
     mostrar_todas = is_admin and (not selected_empresa_id or selected_empresa_id == 'todas')
 
     if mostrar_todas:
-        productos_qs = Producto.objects.all()
+        # Excluir empresa id=1 en productos
+        productos_qs = Producto.objects.exclude(empresa_id=1)
     else:
         try:
-            empresa_actual = Empresa.objects.get(pk=selected_empresa_id) if is_admin else request.user.empresa
+            # Si es admin, obtener empresa seleccionada pero excluyendo la 1
+            if is_admin:
+                empresa_actual = Empresa.objects.exclude(id=1).get(pk=selected_empresa_id)
+            else:
+                empresa_actual = request.user.empresa
         except Empresa.DoesNotExist:
             empresa_actual = request.user.empresa
-        productos_qs = Producto.objects.filter(empresa=empresa_actual)
+        
+        # Solo productos de empresa_actual y nunca empresa 1
+        productos_qs = Producto.objects.filter(empresa=empresa_actual).exclude(empresa_id=1)
 
     # Datos para gráfico de línea
     productos_por_fecha = (
@@ -104,6 +115,7 @@ def home_view(request):
         'is_admin': is_admin,
         'selected_empresa_id': selected_empresa_id or 'todas',
     })
+
 
 
 

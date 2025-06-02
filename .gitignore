@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno virtual
+env/
+venv/
+.venv/
+
+# Archivos de bases de datos SQLite
+db.sqlite3
+
+# Archivos de migraciones compiladas
+*/migrations/*.pyc
+*/migrations/__pycache__/
+*/migrations/*.py~
+
+# Configuración sensible (variables de entorno)
+.env
+
+# Archivos de logs
+*.log
+
+# Archivos estáticos compilados / media
+staticfiles/
+media/
+
+# Configuraciones del editor / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
