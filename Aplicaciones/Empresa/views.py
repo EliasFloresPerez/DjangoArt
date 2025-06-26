@@ -13,10 +13,14 @@ class EmpresaCrudView(AdminRequiredMixin, View):
         empresas = Empresa.objects.exclude(id=1)
         form = EmpresaForm()
 
+        #Nombre de usuario
+        user_name = request.user.nombre
+
         context = {
             'base_template': 'sidebaradmin.html',
             'empresas': empresas,
-            'form': form
+            'form': form,
+            'user_name': user_name,
         }
         return render(request, self.template_name, context)
 

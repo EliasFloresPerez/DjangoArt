@@ -135,6 +135,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease-in-out;
+    position: relative;
 }
 
 @keyframes fadeIn {
@@ -246,6 +247,18 @@
 
 .mensaje.success {
     background-color: #2ecc71;
+}
+
+.btn-cerrar-x {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 50px;
+    color: #000;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 9999;
 }
 
 @keyframes fadeOut {

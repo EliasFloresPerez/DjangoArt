@@ -12,10 +12,14 @@ class ClasificacionCrudView(AdminRequiredMixin, View):
 
         form = ClasificacionForm()
         
+        #Nombre de usuario
+        user_name = request.user.nombre
+
         context = {
             'base_template': 'sidebaradmin.html',
             'clasificaciones': clasificaciones,
-            'form': form
+            'form': form,
+            'user_name': user_name,
         }
         return render(request, self.template_name, context)
 

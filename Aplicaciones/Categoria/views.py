@@ -13,10 +13,14 @@ class CategoriaCrudView(AdminRequiredMixin, View):
         categorias = Categoria.objects.all()
         form = CategoriaForm()
 
+        #Nombre de usuario
+        user_name = request.user.nombre
+
         context = {
             'base_template': 'sidebaradmin.html',
             'categorias': categorias,
-            'form': form
+            'form': form,
+            'user_name': user_name,
         }
         return render(request, self.template_name, context)
 

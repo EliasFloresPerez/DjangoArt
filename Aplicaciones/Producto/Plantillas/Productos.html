@@ -78,6 +78,9 @@
             <!-- Modal editar -->
             <div id="editarModal{{ producto.id }}" class="modal">
                 <div class="modal-contenido">
+                    <button class="btn-cerrar-x" type="button" data-modal-close>
+                        <i class="fas fa-times"></i>
+                    </button>
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="edit">
@@ -160,6 +163,9 @@
 <!-- Modal Eliminar -->
 <div id="confirmarEliminacionModal" class="modal modalEliminar">
     <div class="modal-contenido">
+        <button class="btn-cerrar-x" type="button" data-modal-close>
+            <i class="fas fa-times"></i>
+        </button>
         <h3>¿Estás seguro de que quieres eliminar el producto <span id="usuario-nombre"></span>?</h3>
         <form method="post" id="form-eliminar-usuario">
             {% csrf_token %}
@@ -176,6 +182,9 @@
 <!-- Modal crear -->
 <div id="crearModal" class="modal">
     <div class="modal-contenido">
+        <button class="btn-cerrar-x" type="button" data-modal-close>
+            <i class="fas fa-times"></i>
+        </button>
         <form method="post" action="">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
@@ -245,6 +254,9 @@
 <!-- Modal Crear Reporte -->
 <div id="reporteModal" class="modal">
     <div class="modal-contenido">
+        <button class="btn-cerrar-x" type="button" data-modal-close>
+            <i class="fas fa-times"></i>
+        </button>
         <form method="post" action="">
             {% csrf_token %}
             <h3>Generar Reporte</h3>

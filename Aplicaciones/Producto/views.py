@@ -25,10 +25,14 @@ class ProductoCrudView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         productos = self.get_queryset(request)
         form = ProductoForm()
+        #Nombre de usuario
+        user_name = request.user.nombre
+
         context = {
             'base_template': 'sidebaradmin.html' if request.user.rol.nombre.lower() == 'admin' else 'sidebaruser.html',
             'productos': productos,
-            'form': form
+            'form': form,
+            'user_name': user_name,
         }
         return render(request, self.template_name, context)
 

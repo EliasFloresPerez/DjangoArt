@@ -54,6 +54,9 @@ def home_view(request):
     # Excluir empresa con id=1 en la lista de empresas
     empresas = Empresa.objects.exclude(id=1) if is_admin else [request.user.empresa]
 
+    user_name = request.user.nombre
+
+
     selected_empresa_id = request.GET.get('empresa')
     mostrar_todas = is_admin and (not selected_empresa_id or selected_empresa_id == 'todas')
 
@@ -114,6 +117,7 @@ def home_view(request):
         'empresas': empresas,
         'is_admin': is_admin,
         'selected_empresa_id': selected_empresa_id or 'todas',
+        'user_name': user_name,
     })
 
 

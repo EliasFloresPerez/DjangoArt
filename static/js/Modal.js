@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ======== MODALES =========
     const abrirModales = document.querySelectorAll("[data-modal]");
     const cerrarModales = document.querySelectorAll(".btn-cerrar-modal");
+    const botonesCerrar = document.querySelectorAll(".btn-cerrar-x, [data-modal-close]");
 
     abrirModales.forEach(btn => {
         btn.addEventListener("click", function () {
@@ -31,8 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Botones de "Cancelar"
     cerrarModales.forEach(btn => {
         btn.addEventListener("click", function () {
+            console.log("Cerrando modal");
             const modal = this.closest(".modal");
             if (modal) {
                 modal.style.display = "none";
@@ -40,6 +43,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Botones de "X"
+    botonesCerrar.forEach(btn => {
+    btn.addEventListener("click", function () {
+        const modal = this.closest(".modal");
+        if (modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+    // Cierre al hacer clic fuera del contenido del modal
     window.addEventListener("click", function (e) {
         if (e.target.classList.contains("modal")) {
             e.target.style.display = "none";

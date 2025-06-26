@@ -24,12 +24,16 @@ class UsuarioCrudView(AdminRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         usuarios = Usuario.objects.exclude(id__in=[1, 2])
 
+        #Nombre de usuario
+        user_name = request.user.nombre
+
         form = UsuarioForm()  # Formulario vacío para crear un nuevo usuario
 
         context = {
             'base_template': 'sidebaradmin.html',
             'usuarios': usuarios,
-            'form': form
+            'form': form,
+            'user_name': user_name,
         }
         return render(request, self.template_name_base, context)
 

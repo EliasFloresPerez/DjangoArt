@@ -14,11 +14,13 @@ class NivelCrudView(AdminRequiredMixin, View):
         niveles = Nivel.objects.exclude(id=1)
 
         form = NivelForm()
-
+        #Nombre de usuario
+        user_name = request.user.nombre
         context = {
             'niveles': niveles,
             'form': form,
-            'base_template': 'sidebaradmin.html' 
+            'base_template': 'sidebaradmin.html',
+            'user_name': user_name, 
         }
         return render(request, self.template_name, context)
 

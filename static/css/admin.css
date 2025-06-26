@@ -265,7 +265,10 @@ header .image-text .profession{
     transition: var(--tran-04);
 }
 
-
+.profession-small {
+    font-size: 12px;
+    color: #4c4d4e; /* similar a Tailwind's text-gray-400 */
+}
 
 /* Para dispositivos móviles */
 @media screen and (max-width: 768px) {

@@ -43,6 +43,9 @@
                 <!-- Modal editar -->
                 <div id="editarNivelModal{{ nivel.id }}" class="modal">
                     <div class="modal-contenido">
+                        <button class="btn-cerrar-x" type="button" data-modal-close>
+                            <i class="fas fa-times"></i>
+                        </button>
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="edit">
@@ -67,6 +70,9 @@
 <!-- Modal eliminar -->
 <div id="confirmarEliminacionModal" class="modal modalEliminar">
     <div class="modal-contenido">
+        <button class="btn-cerrar-x" type="button" data-modal-close>
+            <i class="fas fa-times"></i>
+        </button>
         <h3>¿Eliminar el nivel "<span id="nivel-actividad"></span>"?</h3>
         <form method="post">
             {% csrf_token %}
@@ -83,6 +89,9 @@
 <!-- Modal crear -->
 <div id="crearNivelModal" class="modal">
     <div class="modal-contenido">
+        <button class="btn-cerrar-x" type="button" data-modal-close>
+            <i class="fas fa-times"></i>
+        </button>
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
