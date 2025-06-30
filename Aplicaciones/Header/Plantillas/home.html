@@ -5,8 +5,13 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
 
 <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+
+<div id="random-message" class="random-message" style="display: none;">
+    <span id="message-text">♻️ Reutiliza, registra, recicla</span>
+</div>
 
 <div class="dashboard-container">
 
@@ -24,13 +29,32 @@
     {% endif %}
 
     <!-- Métricas -->
-    <div class="metric-box">
-        <h3>Total de Productos</h3>
-        <p>{{ total_productos }}</p>
-    </div>
-    <div class="metric-box">
-        <h3>Total Peso (kg)</h3>
-        <p>{{ total_peso }}</p>
+    <div class="metrics-row" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 20px; width: 100%;">
+        <div class="metric-box traffic-box" style="flex: 1 1 0% !important; min-width: 0; max-width: none;">
+            <h3>Semaforo RAEE</h3>
+            <div class="traffic-light">
+                <div class="light red {% if total_productos >= 800 %}active{% endif %}"></div>
+                <div class="light yellow {% if total_productos >= 500 and total_productos < 800 %}active{% endif %}"></div>
+                <div class="light green {% if total_productos < 500 %}active{% endif %}"></div>
+            </div>
+            <p class="traffic-status">
+                {% if total_productos >= 800 %}
+                    🔴 Alto ({{ total_productos }})
+                {% elif total_productos >= 500 %}
+                    🟡 Moderado ({{ total_productos }})
+                {% else %}
+                    🟢 Poco ({{ total_productos }})
+                {% endif %}
+            </p>
+        </div>
+        <div class="metric-box" style="flex: 1 1 0% !important; min-width: 0; max-width: none;">
+            <h3>Total de Productos</h3>
+            <p>{{ total_productos }}</p>
+        </div>
+        <div class="metric-box" style="flex: 1 1 0% !important; min-width: 0; max-width: none;">
+            <h3>Total Peso (kg)</h3>
+            <p>{{ total_peso }}</p>
+        </div>
     </div>
 
     <!-- Gráficos -->
@@ -112,4 +136,27 @@
     }, 300);
 });
 </script>
+
+<!-- Chatbot RAEE -->
+{% if is_admin %}
+<div id="chatbot-container" style="display:none;">
+    <div id="chatbot-header">
+        <span>🤖 Asistente RAEE</span>
+        <button id="toggle-chat">💬</button>
+    </div>
+    <div id="chatbot-body">
+        <div id="chat-messages"></div>
+        <div id="chat-suggestions"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Escribe tu pregunta...">
+            <button id="send-btn">Enviar</button>
+        </div>
+    </div>
+</div>
+<button id="open-chatbot" style="position:fixed;bottom:20px;right:20px;left:auto;z-index:9999;">💬</button>
+{% endif %}
+
+<script src="{% static 'js/chatbot.js' %}"></script>
+<script src="{% static 'js/random-messages.js' %}"></script>
+
 {% endblock %}

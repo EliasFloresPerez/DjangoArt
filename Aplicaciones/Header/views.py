@@ -8,13 +8,17 @@ from django.views import View
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
-from .models import Usuario, Empresa, Rol, Clasificacion, Nivel
+from .models import Usuario, Empresa, Rol, Clasificacion, Nivel, Producto, Categoria
 
 
 
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
-from .models import Producto
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+# from .models import RAEE  # Si tienes un modelo RAEE, descomenta y ajusta
 
 
 def login_view(request):
@@ -189,4 +193,125 @@ class RecuperarContrasenaView(View):
             except Usuario.DoesNotExist:
                 messages.error(request, 'Usuario no válido.')
                 return redirect('login')
+    
+
+@csrf_exempt
+def chatbot_api(request):
+    # Verificar que solo usuarios admin puedan acceder
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'No autorizado'}, status=401)
+    
+    # Verificar si es admin
+    if request.user.rol.nombre.lower() != "admin":
+        return JsonResponse({'error': 'Acceso denegado. Solo administradores pueden usar el chatbot.'}, status=403)
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        message = data.get('message', '')
+        
+        # Usar la misma lógica de filtrado que el dashboard
+        is_admin = request.user.rol.nombre.lower() == "admin"
+        
+        if is_admin:
+            # Para admin, contar todos los productos excepto empresa 1
+            total_productos = Producto.objects.exclude(empresa_id=1).count()
+        else:
+            # Para usuario normal, solo productos de su empresa
+            total_productos = Producto.objects.filter(empresa=request.user.empresa).exclude(empresa_id=1).count()
+        
+        response = process_raee_message(message, total_productos, request.user)
+        
+        return JsonResponse({'response': response})
+    
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+def process_raee_message(message, total_productos, user):
+    # Lógica del chatbot con datos reales del sistema
+    if 'estadísticas' in message or 'stats' in message or 'cuántos' in message:
+        # Usar la misma lógica de filtrado que el dashboard
+        is_admin = user.rol.nombre.lower() == "admin"
+        
+        if is_admin:
+            total_peso = Producto.objects.exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+        else:
+            total_peso = Producto.objects.filter(empresa=user.empresa).exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+        
+        return f"📊 Tu sistema tiene registrados {total_productos} productos RAEE con un peso total de {float(total_peso):.2f} kg."
+    
+    if 'empresa' in message and ('cuántos' in message or 'por empresa' in message):
+        # Consultar productos por empresa
+        productos_por_empresa = Producto.objects.values('empresa__nombre').annotate(
+            total=Count('id'),
+            peso_total=Sum('peso')
+        ).exclude(empresa_id=1).order_by('-total')
+        
+        if productos_por_empresa:
+            respuesta = "🏢 **RAEE por empresa:**\n"
+            for item in productos_por_empresa:
+                empresa_nombre = item['empresa__nombre']
+                total = item['total']
+                peso = float(item['peso_total'] or 0)
+                respuesta += f"• **{empresa_nombre}**: {total} productos ({peso:.1f} kg)\n"
+            return respuesta
+        else:
+            return "No hay productos RAEE registrados por empresa aún."
+    
+    if 'año' in message or 'ano' in message or 'year' in message:
+        # Mostrar opciones de años disponibles
+        from datetime import datetime
+        current_year = datetime.now().year
+        
+        # Usar la misma lógica de filtrado que el dashboard
+        is_admin = user.rol.nombre.lower() == "admin"
+        
+        respuesta = f"📅 **Selecciona un año para ver los RAEE:**\n"
+        for year in range(2022, current_year + 1):
+            # Contar productos por año
+            if is_admin:
+                productos_anio = Producto.objects.filter(fecha_ingreso__year=year).exclude(empresa_id=1).count()
+                peso_anio = Producto.objects.filter(fecha_ingreso__year=year).exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+            else:
+                productos_anio = Producto.objects.filter(fecha_ingreso__year=year, empresa=user.empresa).exclude(empresa_id=1).count()
+                peso_anio = Producto.objects.filter(fecha_ingreso__year=year, empresa=user.empresa).exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+            
+            respuesta += f"• **{year}**: {productos_anio} productos ({float(peso_anio):.1f} kg)\n"
+        
+        return respuesta
+    
+    if 'impacto' in message or 'ambiental' in message or 'co2' in message:
+        # Usar la misma lógica de filtrado que el dashboard
+        is_admin = user.rol.nombre.lower() == "admin"
+        
+        if is_admin:
+            total_peso = Producto.objects.exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+        else:
+            total_peso = Producto.objects.filter(empresa=user.empresa).exclude(empresa_id=1).aggregate(Sum('peso'))['peso__sum'] or 0
+        
+        co2_saved = float(total_peso) * 2.5
+        agua_saved = float(total_peso) * 15
+        return f"🌱 Con {float(total_peso):.2f} kg de RAEE reciclado has evitado:\n• {co2_saved:.1f} kg de CO₂\n• {agua_saved:.0f} litros de agua\n• Recuperado materiales valiosos"
+    
+    if 'categorías' in message or 'categorias' in message or 'tipos' in message:
+        categorias = Categoria.objects.all()
+        if categorias:
+            cat_list = "\n".join([f"• {cat.codigo}: {cat.descripcion}" for cat in categorias[:5]])
+            return f"📋 Las categorías disponibles son:\n{cat_list}"
+        else:
+            return "No hay categorías registradas aún."
+    
+    if 'empresas' in message or 'empresa' in message:
+        empresas = Empresa.objects.exclude(id=1).count()
+        return f"🏢 Hay {empresas} empresas registradas en el sistema."
+    
+    if 'registrar' in message or 'nuevo' in message or 'agregar' in message:
+        return "Para registrar un nuevo RAEE:\n1️⃣ Ve a 'Productos' en el menú\n2️⃣ Haz clic en 'Agregar'\n3️⃣ Completa los datos del producto\n4️⃣ Guarda el registro"
+    
+    if 'beneficios' in message or 'ventajas' in message:
+        return "♻️ Los beneficios de reciclar RAEE incluyen:\n• Reducción de contaminación\n• Recuperación de metales preciosos\n• Ahorro de energía\n• Cumplimiento normativo\n• Responsabilidad ambiental"
+    
+    if 'ayuda' in message or 'como' in message:
+        return "🤖 Puedo ayudarte con:\n• Estadísticas del sistema\n• RAEE por empresa\n• RAEE por año\n• Impacto ambiental\n• Categorías de RAEE\n• Proceso de registro\n• Información de empresas"
+    
+    # Respuesta por defecto
+    return "Interesante pregunta 🤔 Puedo ayudarte con estadísticas, RAEE por empresa, RAEE por año, impacto ambiental, categorías, registro de productos y más."
     
