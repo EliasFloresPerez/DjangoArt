@@ -1,4 +1,3 @@
-from datetime import date
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -28,14 +27,12 @@ class ProductoCrudView(LoginRequiredMixin, View):
         form = ProductoForm()
         #Nombre de usuario
         user_name = request.user.nombre
-        hoy = date.today().isoformat()
-        
+
         context = {
             'base_template': 'sidebaradmin.html' if request.user.rol.nombre.lower() == 'admin' else 'sidebaruser.html',
             'productos': productos,
             'form': form,
             'user_name': user_name,
-            'hoy': hoy,
         }
         return render(request, self.template_name, context)
 

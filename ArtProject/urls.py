@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import redirect
-from Aplicaciones.Header.views import login_view,home_view, RecuperarContrasenaView,logout_view
+from Aplicaciones.Header.views import login_view,home_view, RecuperarContrasenaView,logout_view, chatbot_api
 from Aplicaciones.Usuarios.views import UsuarioCrudView
 from Aplicaciones.Niveles.views import NivelCrudView
 from Aplicaciones.Clasificacion.views import ClasificacionCrudView
@@ -41,11 +41,7 @@ urlpatterns = [
     path('categorias/', CategoriaCrudView.as_view(), name='categoria_crud'),  # URL para listar categorías
     path('productos/', ProductoCrudView.as_view(), name='producto_crud'),  # URL para listar productos
     path('productos/imprimir/', Reporte.as_view(), name='Reporte'),
-    
-
-
-    
-
+    path('api/chatbot/', chatbot_api, name='chatbot_api'),
 ]
 
 # Redirige cualquier URL no definida a la página principal (home)

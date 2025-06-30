@@ -1,0 +1,137 @@
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    width: 350px;
+    height: 500px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+#chatbot-header {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 15px 15px 0 0;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chatbot-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#chat-suggestions {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+#chat-suggestions .suggestion-title {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+#chat-input-container {
+    display: flex;
+    gap: 5px;
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 10px;
+    margin: 0 -10px -10px -10px;
+    border-radius: 0 0 15px 15px;
+}
+
+#chat-input {
+    flex: 1;
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+}
+
+#send-btn {
+    border-radius: 10px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.message {
+    margin: 5px 0;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease;
+    word-break: break-word;
+}
+
+.bot-message {
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    align-self: flex-start;
+}
+
+.user-message {
+    background: #4CAF50;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+#open-chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    z-index: 9999;
+}
+
+.suggestion-btn {
+    margin: 4px 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.9);
+    color: #764ba2;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.2s;
+    width: 100%;
+    text-align: left;
+    display: block;
+}
+
+.suggestion-btn:hover {
+    background: rgba(255,255,255,1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px);}
+    to { opacity: 1; transform: translateY(0);}
+} 

@@ -99,7 +99,7 @@ class Producto(models.Model):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     correo_encriptado = models.BinaryField()
     correo_claro = models.EmailField(unique=True)  # Este es el indexado para login
-    cedula = models.CharField(max_length=20, blank=True, unique=True)
+    cedula = models.CharField(max_length=20, blank=True)
     nombre = models.CharField(max_length=150)
     telefono = models.CharField(max_length=20, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
