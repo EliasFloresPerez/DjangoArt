@@ -153,7 +153,12 @@
         </div>
     </div>
 </div>
-<button id="open-chatbot" style="position:fixed;bottom:20px;right:20px;left:auto;z-index:9999;">💬</button>
+<button id="open-chatbot" aria-label="Abrir chatbot">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 0 0-6.928 12.485L0 16l3.515-1.072A8 8 0 1 0 8 0zM4 7h8v2H4V7z"/>
+  </svg>
+</button>
+
 {% endif %}
 
 <script src="{% static 'js/chatbot.js' %}"></script>

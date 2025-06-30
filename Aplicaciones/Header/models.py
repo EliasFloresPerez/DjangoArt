@@ -82,7 +82,7 @@ class Categoria(models.Model):
         return self.descripcion
 
 class Producto(models.Model):
-    codigo = models.CharField(max_length=100, unique=True)
+    codigo = models.CharField(max_length=100, unique=False)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     peso = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=50)

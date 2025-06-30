@@ -31,7 +31,7 @@ def generar_pdf_retiro_raee_bytes(datos, titulo, filtro):
     # Título
     elementos.append(Paragraph(titulo, style_title))
     elementos.append(Spacer(1, 0.5*cm))
-
+    # ?
     # Cabecera de tabla
     data = [["ITEM", filtro, "KGS"]]
     total = 0
