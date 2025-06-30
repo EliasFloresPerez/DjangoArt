@@ -142,10 +142,12 @@
             <input name="correo_claro" type="email" required>
 
             <label>Cédula</label>
-            <input name="cedula" type="text" required 
-                pattern="09\d{8}" 
-                maxlength="10" 
-                title="La cédula debe comenzar con 09 y tener 10 dígitos">
+            <input name="cedula"
+            type="text"
+            pattern="^\d{10}$"
+            maxlength="10"
+            required
+            title="Debe contener exactamente 10 dígitos numéricos">
 
 
             <label>Nombre</label>
