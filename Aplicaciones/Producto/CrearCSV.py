@@ -35,7 +35,7 @@ def generar_excel_retiro_raee_bytes(datos, titulo, filtro):
     ws.cell(row=fila, column=1, value="ITEM").font = Font(bold=True)
     ws.cell(row=fila, column=1).alignment = Alignment(horizontal="center", vertical="center")
 
-    ws.cell(row=fila, column=2, value=filtro).font = Font(bold=True)
+    ws.cell(row=fila, column=2, value=filtro.upper()).font = Font(bold=True)
     ws.cell(row=fila, column=2).alignment = Alignment(horizontal="center", vertical="center")
 
     ws.cell(row=fila, column=3, value="KGS").font = Font(bold=True)

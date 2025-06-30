@@ -71,7 +71,10 @@
             <input name="telefono" value="{{ usuario.telefono }}">
 
             <label>Cédula</label>
-            <input name="cedula" value="{{ usuario.cedula }}"> <!-- Cédula deshabilitada -->
+            <input name="cedula" value="{{ usuario.cedula }}" 
+                pattern="09\d{8}" 
+                maxlength="10" 
+                title="La cédula debe comenzar con 09 y tener 10 dígitos">
 
             <label>Contraseña (Dejar vacío si no desea cambiar)</label>
             <input name="password" type="password" placeholder="Nueva Contraseña">
@@ -139,7 +142,11 @@
             <input name="correo_claro" type="email" required>
 
             <label>Cédula</label>
-            <input name="cedula" type="text" required>
+            <input name="cedula" type="text" required 
+                pattern="09\d{8}" 
+                maxlength="10" 
+                title="La cédula debe comenzar con 09 y tener 10 dígitos">
+
 
             <label>Nombre</label>
             <input name="nombre" type="text" required>
