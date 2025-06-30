@@ -98,10 +98,10 @@
                         <input name="descripcion" value="{{ producto.descripcion }}" required>
 
                         <label>Peso(Kg)</label>
-                        <input name="peso"  type= "number" value="{{ producto.peso }}" required>
+                        <input name="peso" type="number" step="0.01" min="0" max="9999.99" pattern="^\d{1,4}(\.\d{1,2})?$" required oninput="validarPeso(this)">
 
                         <label>Cantidad</label>
-                        <input name="cantidad" type="number" value="{{ producto.cantidad }}" required>
+                        <input name="cantidad" type="number" min="0" max="9999" pattern="^\d{1,4}$" required oninput="validarCantidad(this)">
 
                         <label>Origen</label>
                         <select name="origen" required>
@@ -111,7 +111,9 @@
                         </select>
 
                         <label>Fecha de Ingreso</label>
-                        <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required>
+                        <input name="fecha_ingreso" type="date" value="{{ producto.fecha_ingreso|date:'Y-m-d' }}" required max="{{ hoy }}">
+
+
 
                         <label>Estado</label>
                         <select name="estado" required>
@@ -201,10 +203,11 @@
             <input name="descripcion" required>
 
             <label>Peso(Kg)</label>
-            <input name="peso" type="number" step="0.01" required>
+            <input name="peso" type="number" step="0.01" min="0" max="9999.99" pattern="^\d{1,4}(\.\d{1,2})?$" value="{{ producto.peso }}" required oninput="validarPeso(this)">
+
 
             <label>Cantidad</label>
-            <input name="cantidad" type="number" required>
+            <input name="cantidad" type="number" min="0" max="9999" pattern="^\d{1,4}$" required oninput="validarCantidad(this)">
 
             <label>Origen</label>
             
@@ -216,7 +219,8 @@
             </select>
 
             <label>Fecha de Ingreso</label>
-            <input name="fecha_ingreso" type="date" required>
+            <input name="fecha_ingreso" type="date" required max="{{ hoy }}">
+
 
             <label>Estado</label>
             <select name="estado" required>
@@ -315,6 +319,29 @@
                 btnReporte.addClass('disable').prop('disabled', true);
             }
         }
+
+        function validarPeso(input) {
+            const valor = input.value;
+            const regex = /^\d{0,4}(\.\d{0,2})?$/;
+
+            if (!regex.test(valor)) {
+                input.setCustomValidity("Máximo 4 dígitos enteros y 2 decimales.");
+            } else {
+                input.setCustomValidity(""); // Limpia el mensaje de error si es válido
+            }
+        }
+
+        function validarCantidad(input) {
+            const valor = input.value;
+            const regex = /^\d{0,4}$/;
+
+            if (!regex.test(valor)) {
+                input.setCustomValidity("Cantidad debe tener máximo 4 dígitos sin decimales.");
+            } else {
+                input.setCustomValidity("");
+            }
+        }
+
 
         // === Función: Valida fechas de reporte ===
         function validarFechasReporte() {
