@@ -3,7 +3,6 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 <script src="{% static 'js/Modal.js' %}"></script>
 
@@ -15,7 +14,6 @@
         <thead>
             <tr>
                 <th>ID</th>
-                
                 <th>Nombre</th>
                 <th>Cédula</th>
                 <th>Teléfono</th>
@@ -26,12 +24,11 @@
         <tbody>
             {% for usuario in usuarios %}
                 <tr>
-                    <td>{{ usuario.id }}</td>  <!-- ID del usuario -->
-                    
-                    <td>{{ usuario.nombre }}</td>  <!-- Nombre -->
-                    <td>{{ usuario.cedula }}</td>  <!-- Cédula -->
-                    <td>{{ usuario.telefono }}</td>  <!-- Teléfono -->
-                    <td>{{ usuario.empresa.nombre }}</td>  <!-- Empresa -->
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.cedula }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>{{ usuario.empresa.nombre }}</td>
                     <td style="display: flex; gap: 0.3rem;">
                         <button class="btn-editar" data-modal="editarModal{{ usuario.id }}" title="Editar">
                             <i class="fas fa-pen"></i>
@@ -46,70 +43,68 @@
                     </td>
                 </tr>
 
-  
+                <!-- Modal editar -->
+                <div id="editarModal{{ usuario.id }}" class="modal">
+                    <div class="modal-contenido">
+                        <button class="btn-cerrar-x" type="button" data-modal-close>
+                            <i class="fas fa-times"></i>
+                        </button>
 
-<!-- Modal editar -->
-<div id="editarModal{{ usuario.id }}" class="modal">
-    <div class="modal-contenido">
-         <button class="btn-cerrar-x" type="button" data-modal-close>
-            <i class="fas fa-times"></i>
-        </button>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id" value="{{ usuario.id }}">
 
-        <form method="post" action="">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="edit">
-            <input type="hidden" name="id" value="{{ usuario.id }}">
+                            <h3>Editar Usuario</h3>
+                            <label>Correo</label>
+                            <input name="correo_claro" value="{{ usuario.correo_claro }}" required>
 
-            <h3>Editar Usuario</h3>
-            <label>Correo</label>
-            <input name="correo_claro" value="{{ usuario.correo_claro }}">
+                            <label>Nombre</label>
+                            <input name="nombre" value="{{ usuario.nombre }}" required>
 
-            <label>Nombre</label>
-            <input name="nombre" value="{{ usuario.nombre }}">
+                            <label>Teléfono</label>
+                            <input name="telefono" value="{{ usuario.telefono }}" required>
 
-            <label>Teléfono</label>
-            <input name="telefono" value="{{ usuario.telefono }}">
+                            <label>Cédula</label>
+                            <input name="cedula" 
+                                   value="{{ usuario.cedula }}" 
+                                   pattern="^\d+$"
+                                   required
+                                   title="Solo se permiten números en este campo">
 
-            <label>Cédula</label>
-            <input name="cedula" value="{{ usuario.cedula }}" 
-                pattern="09\d{8}" 
-                maxlength="10" 
-                title="La cédula debe comenzar con 09 y tener 10 dígitos">
+                            <label>Contraseña (Dejar vacío si no desea cambiar)</label>
+                            <input name="password" type="password" placeholder="Nueva Contraseña">
 
-            <label>Contraseña (Dejar vacío si no desea cambiar)</label>
-            <input name="password" type="password" placeholder="Nueva Contraseña">
+                            <label>Empresa</label>
+                            <select name="empresa" required>
+                                {% for empresa in form.fields.empresa.queryset %}
+                                    <option value="{{ empresa.id }}" {% if empresa == usuario.empresa %}selected{% endif %}>{{ empresa.nombre }}</option>
+                                {% endfor %}
+                            </select>
 
-            <label>Empresa</label>
-            <select name="empresa">
-                {% for empresa in form.fields.empresa.queryset %}
-                    <option value="{{ empresa.id }}" {% if empresa == usuario.empresa %}selected{% endif %}>{{ empresa.nombre }}</option>
-                {% endfor %}
-            </select>
+                            <label>Rol</label>
+                            <select name="rol" required>
+                                {% for rol in form.fields.rol.queryset %}
+                                    <option value="{{ rol.id }}" {% if rol == usuario.rol %}selected{% endif %}>{{ rol.nombre }}</option>
+                                {% endfor %}
+                            </select>
 
-            <label>Rol</label>
-            <select name="rol">
-                {% for rol in form.fields.rol.queryset %}
-                    <option value="{{ rol.id }}" {% if rol == usuario.rol %}selected{% endif %}>{{ rol.nombre }}</option>
-                {% endfor %}
-            </select>
-
-            
-
-            <div class="botones-modal">
-                <button type="submit">Guardar</button>
-            <button type="button" class="btn-cerrar-modal">Cancelar</button>
-            </div>
-        </form>
-    </div>
-</div>
-
+                            <div class="botones-modal">
+                                <button type="submit">Guardar</button>
+                                <button type="button" class="btn-cerrar-modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<!-- Modal eliminar -->
 <div id="confirmarEliminacionModal" class="modal modalEliminar">
     <div class="modal-contenido">
-         <button class="btn-cerrar-x" type="button" data-modal-close>
+        <button class="btn-cerrar-x" type="button" data-modal-close>
             <i class="fas fa-times"></i>
         </button>
 
@@ -121,15 +116,15 @@
             <div class="botones-modal">
                 <button type="submit">Sí, eliminar</button>
                 <button type="button" class="btn-cerrar-modal">Cancelar</button>
-
             </div>
         </form>
     </div>
-</div>      
+</div>
+
 <!-- Modal crear -->
 <div id="crearModal" class="modal">
     <div class="modal-contenido">
-         <button class="btn-cerrar-x" type="button" data-modal-close>
+        <button class="btn-cerrar-x" type="button" data-modal-close>
             <i class="fas fa-times"></i>
         </button>
 
@@ -138,17 +133,16 @@
             <input type="hidden" name="action" value="create">
 
             <h3>Crear Usuario</h3>
+
             <label>Correo</label>
             <input name="correo_claro" type="email" required>
 
             <label>Cédula</label>
             <input name="cedula"
-            type="text"
-            pattern="^\d{10}$"
-            maxlength="10"
-            required
-            title="Debe contener exactamente 10 dígitos numéricos">
-
+                   type="text"
+                   pattern="^\d+$"
+                   required
+                   title="Solo se permiten números en este campo">
 
             <label>Nombre</label>
             <input name="nombre" type="text" required>
@@ -173,8 +167,6 @@
                 {% endfor %}
             </select>
 
-            
-
             <div class="botones-modal">
                 <button type="submit">Crear</button>
                 <button type="button" class="btn-cerrar-modal">Cancelar</button>
@@ -182,7 +174,6 @@
         </form>
     </div>
 </div>
-
 
 <!-- jQuery y DataTables JS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
